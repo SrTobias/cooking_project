@@ -103,9 +103,13 @@ No campo "ingredientes_em_falta", lista TODOS os ingredientes da receita (lista 
 completa), com as quantidades já ajustadas a {pessoas} pessoas."""
 
 
-def get_retriever(k: int = 4):
+def retrieve_with_likes(query: str, k: int, fetch_k: int | None = None) -> list[Document]:
+    """Recupera os fetch_k documentos mais semelhantes e reordena-os pelos likes líquidos
+    (likes - dislikes), para que receitas mais bem avaliadas apareçam primeiro no contexto."""
     vectorstore = load_vectorstore()
-    return vectorstore.as_retriever(search_kwargs={"k": k})
+    candidatos = vectorstore.similarity_search(query, k=fetch_k or k * 3)
+    candidatos.sort(key=lambda d: d.metadata.get("likes", 0) - d.metadata.get("dislikes", 0), reverse=True)
+    return candidatos[:k]
 
 
 def _format_docs(docs) -> str:
@@ -168,9 +172,8 @@ def _guardar_se_nova(ficha: FichaTecnica) -> None:
 
 
 def gerar_opcao1(ingredientes_disponiveis: list[str], pessoas: int) -> tuple[FichaTecnica, str | None]:
-    retriever = get_retriever(k=4)
     query = "Receita que utilize estes ingredientes: " + ", ".join(ingredientes_disponiveis)
-    docs = retriever.invoke(query)
+    docs = retrieve_with_likes(query, k=4)
 
     chain = _build_chain(TASK_OPCAO1)
     inputs = {
@@ -184,8 +187,7 @@ def gerar_opcao1(ingredientes_disponiveis: list[str], pessoas: int) -> tuple[Fic
 
 
 def gerar_opcao2(nome_prato: str, pessoas: int) -> tuple[FichaTecnica, str | None]:
-    retriever = get_retriever(k=3)
-    docs = retriever.invoke(nome_prato)
+    docs = retrieve_with_likes(nome_prato, k=3)
 
     chain = _build_chain(TASK_OPCAO2)
     inputs = {

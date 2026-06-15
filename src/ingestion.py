@@ -22,6 +22,8 @@ def _parse_metadata(text: str, filename: str) -> dict:
         "source": filename,
         "nome_prato": nome_match.group(1).strip() if nome_match else filename,
         "categoria": categoria_match.group(1).strip() if categoria_match else "Desconhecida",
+        "likes": 0,
+        "dislikes": 0,
     }
 
 
@@ -146,6 +148,27 @@ def add_recipe_document(document: Document) -> None:
 
     path.write_text(document.page_content, encoding="utf-8")
     document.metadata["source"] = path.name
+    document.metadata.setdefault("likes", 0)
+    document.metadata.setdefault("dislikes", 0)
 
     vectorstore = load_vectorstore()
     vectorstore.add_documents(split_documents([document]))
+
+
+def update_recipe_feedback(nome_prato: str, gostou: bool) -> None:
+    """Incrementa o contador likes/dislikes (metadata) de todos os chunks da receita indicada."""
+    vectorstore = load_vectorstore()
+    data = vectorstore.get(include=["metadatas"])
+    nome_normalizado = _normalize_nome(nome_prato)
+    campo = "likes" if gostou else "dislikes"
+
+    ids, metadatas = [], []
+    for id_, metadata in zip(data["ids"], data["metadatas"]):
+        if _normalize_nome(metadata.get("nome_prato", "")) == nome_normalizado:
+            metadata = dict(metadata)
+            metadata[campo] = metadata.get(campo, 0) + 1
+            ids.append(id_)
+            metadatas.append(metadata)
+
+    if ids:
+        vectorstore._collection.update(ids=ids, metadatas=metadatas)

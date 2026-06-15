@@ -8,9 +8,10 @@ estimativa de custo da lista de compras.
 from __future__ import annotations
 
 import streamlit as st
+from streamlit_geolocation import streamlit_geolocation
 
 from src import config
-from src.ingestion import index_exists
+from src.ingestion import index_exists, update_recipe_feedback
 from src.observability import send_feedback, setup_langsmith
 from src.pricing import estimar_custo
 from src.rag import TIPOS_REFEICAO, FichaTecnica, gerar_opcao1, gerar_opcao2, gerar_opcao3
@@ -53,11 +54,8 @@ def _render_ficha(ficha: FichaTecnica) -> None:
         st.markdown(f"{idx}. {passo}")
 
 
-def _render_feedback(run_id: str | None) -> None:
-    if not langsmith_ativo or run_id is None:
-        return
-
-    feedback_key = f"feedback_{run_id}"
+def _render_feedback(ficha: FichaTecnica, run_id: str | None) -> None:
+    feedback_key = f"feedback_{run_id or ficha.nome_prato}"
     st.markdown("#### O que achaste desta sugestão?")
 
     if st.session_state.get(feedback_key):
@@ -65,18 +63,22 @@ def _render_feedback(run_id: str | None) -> None:
         return
 
     col1, col2, _ = st.columns([1, 1, 8])
-    if col1.button("👍", key=f"like_{run_id}"):
-        send_feedback(run_id, score=1)
+    if col1.button("👍", key=f"like_{feedback_key}"):
+        if langsmith_ativo and run_id:
+            send_feedback(run_id, score=1)
+        update_recipe_feedback(ficha.nome_prato, gostou=True)
         st.session_state[feedback_key] = True
         st.rerun()
-    if col2.button("👎", key=f"dislike_{run_id}"):
-        send_feedback(run_id, score=0)
+    if col2.button("👎", key=f"dislike_{feedback_key}"):
+        if langsmith_ativo and run_id:
+            send_feedback(run_id, score=0)
+        update_recipe_feedback(ficha.nome_prato, gostou=False)
         st.session_state[feedback_key] = True
         st.rerun()
 
 
-def _render_lista_compras(ficha: FichaTecnica, endereco: str, raio_km: float) -> None:
-    st.markdown("## 🛒 Lista de compras e supermercados próximos")
+def _render_lista_compras(ficha: FichaTecnica) -> None:
+    st.markdown("## 🛒 Lista de compras")
 
     if not ficha.ingredientes_em_falta:
         st.info("Não é necessário comprar nada — já tens todos os ingredientes!")
@@ -101,14 +103,40 @@ def _render_lista_compras(ficha: FichaTecnica, endereco: str, raio_km: float) ->
         "reais em loja."
     )
 
-    st.markdown(f"#### Supermercados num raio de até {config.MAX_RADIUS_KM} km")
-    if not endereco:
-        st.info("Indica o teu endereço/código postal na barra lateral para ver os supermercados próximos.")
-        return
 
-    coords = _geocode(endereco)
+def _render_supermercados() -> None:
+    st.markdown("## 📍 Supermercados na zona")
+
+    modo = st.radio(
+        "Como queres indicar a tua localização?",
+        ["Usar a minha localização", "Indicar morada"],
+        horizontal=True,
+        key="loc_modo",
+    )
+    raio_km = st.slider(
+        "Até que raio de distância queres procurar (km)?",
+        min_value=1,
+        max_value=config.MAX_RADIUS_KM,
+        value=config.MAX_RADIUS_KM,
+        key="loc_raio",
+    )
+
+    coords = None
+    if modo == "Usar a minha localização":
+        st.caption("Clica no botão e permite o acesso à localização no browser.")
+        localizacao = streamlit_geolocation()
+        if localizacao and localizacao.get("latitude") is not None:
+            coords = (localizacao["latitude"], localizacao["longitude"])
+    else:
+        endereco = st.text_input(
+            "Endereço ou código postal", placeholder="ex: Avenida da Liberdade, Lisboa", key="loc_endereco"
+        )
+        if endereco:
+            coords = _geocode(endereco)
+            if coords is None:
+                st.warning("Não foi possível localizar esse endereço. Verifica e tenta novamente.")
+
     if coords is None:
-        st.warning("Não foi possível localizar esse endereço. Verifica e tenta novamente.")
         return
 
     lat, lon = coords
@@ -141,11 +169,6 @@ def _render_lista_compras(ficha: FichaTecnica, endereco: str, raio_km: float) ->
 
 # --- Sidebar -----------------------------------------------------------------
 with st.sidebar:
-    st.header("📍 Localização")
-    endereco = st.text_input("Endereço ou código postal", placeholder="ex: Avenida da Liberdade, Lisboa")
-    raio_km = st.slider("Raio de busca (km)", min_value=1, max_value=config.MAX_RADIUS_KM, value=config.MAX_RADIUS_KM)
-
-    st.divider()
     st.caption(f"Modelo LLM: `{config.LLM_MODEL}`")
     st.caption(f"Modelo de embeddings: `{config.EMBEDDING_MODEL}`")
     st.caption("LangSmith: " + ("✅ ativo" if langsmith_ativo else "desativado (define LANGCHAIN_API_KEY)"))
@@ -221,6 +244,8 @@ if "resultado" in st.session_state:
     ficha, run_id = st.session_state["resultado"]
     st.divider()
     _render_ficha(ficha)
-    _render_feedback(run_id)
+    _render_feedback(ficha, run_id)
     st.divider()
-    _render_lista_compras(ficha, endereco, raio_km)
+    _render_lista_compras(ficha)
+    st.divider()
+    _render_supermercados()

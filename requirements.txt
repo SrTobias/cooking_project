@@ -5,6 +5,7 @@ langchain-community
 chromadb
 langsmith
 streamlit
+streamlit-geolocation
 python-dotenv
 geopy
 requests

@@ -17,7 +17,7 @@ from langchain_openai import ChatOpenAI
 from pydantic import BaseModel, Field
 
 from src import config
-from src.ingestion import add_recipe_document, load_vectorstore, recipe_exists
+from src.ingestion import add_recipe_document, load_vectorstore, recipe_exists, tempo_para_minutos
 
 TIPOS_REFEICAO = ["Qualquer", "Sopa", "Prato principal", "Sobremesa"]
 
@@ -167,7 +167,7 @@ def _ficha_to_document(ficha: FichaTecnica) -> Document:
         metadata={
             "nome_prato": ficha.nome_prato,
             "categoria": ficha.categoria,
-            "tempo_preparacao": ficha.tempo_preparacao,
+            "tempo_preparacao": tempo_para_minutos(ficha.tempo_preparacao),
         },
     )
 

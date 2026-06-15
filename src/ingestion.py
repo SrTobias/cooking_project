@@ -16,6 +16,15 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 from src import config
 
 
+def tempo_para_minutos(tempo: str) -> int:
+    """Converte uma string de tempo de preparação (ex: '1 hora e 30 minutos') em minutos."""
+    horas_match = re.search(r"(\d+)\s*horas?", tempo)
+    minutos_match = re.search(r"(\d+)\s*minutos?", tempo)
+    horas = int(horas_match.group(1)) if horas_match else 0
+    minutos = int(minutos_match.group(1)) if minutos_match else 0
+    return horas * 60 + minutos
+
+
 def _parse_metadata(text: str, filename: str) -> dict:
     nome_match = re.search(r"^#\s+(.+)$", text, re.MULTILINE)
     categoria_match = re.search(r"##\s*Categoria\s*\n+(.+)", text)
@@ -23,7 +32,7 @@ def _parse_metadata(text: str, filename: str) -> dict:
     return {
         "nome_prato": nome_match.group(1).strip() if nome_match else filename,
         "categoria": categoria_match.group(1).strip() if categoria_match else "Desconhecida",
-        "tempo_preparacao": tempo_match.group(1).strip() if tempo_match else "Desconhecido",
+        "tempo_preparacao": tempo_para_minutos(tempo_match.group(1)) if tempo_match else 0,
         "likes": 0,
         "dislikes": 0,
     }
@@ -153,7 +162,7 @@ def add_recipe_document(document: Document) -> None:
         contador += 1
 
     path.write_text(document.page_content, encoding="utf-8")
-    document.metadata.setdefault("tempo_preparacao", "Desconhecido")
+    document.metadata.setdefault("tempo_preparacao", 0)
     document.metadata.setdefault("likes", 0)
     document.metadata.setdefault("dislikes", 0)
 

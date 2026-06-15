@@ -83,7 +83,8 @@ Também são suportados ficheiros `.pdf` na mesma pasta.
 ### Metadata indexada
 
 Cada chunk no Chroma guarda os seguintes campos de metadata: `nome_prato`, `categoria`,
-`tempo_preparacao` (extraído da secção "## Tempo de preparação"), `likes` e `dislikes`.
+`tempo_preparacao` (número inteiro, em minutos, convertido a partir da secção "## Tempo de
+preparação"), `likes` e `dislikes`.
 
 ### Auto-enriquecimento da base de conhecimento
 

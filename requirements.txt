@@ -1,0 +1,11 @@
+langchain
+langchain-openai
+langchain-chroma
+langchain-community
+chromadb
+langsmith
+streamlit
+python-dotenv
+geopy
+requests
+pydantic

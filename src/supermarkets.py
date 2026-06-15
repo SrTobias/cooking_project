@@ -22,6 +22,12 @@ RECOMMENDED_CHAINS = [
     "leclerc",
 ]
 
+# Nomes (normalizados) de locais mal classificados no OpenStreetMap como shop=supermarket
+# (ex: antigos supermercados convertidos noutro tipo de negócio, mas com a tag desatualizada).
+EXCLUDED_NAMES = [
+    "unilabs",
+]
+
 
 def _normalize(text: str) -> str:
     text = unicodedata.normalize("NFKD", text)
@@ -104,9 +110,13 @@ def find_supermarkets(lat: float, lon: float, radius_km: float = config.MAX_RADI
         if el_lat is None or el_lon is None:
             continue
 
+        nome = tags.get("name") or tags.get("brand") or "Supermercado"
+        if _normalize(nome) in EXCLUDED_NAMES:
+            continue
+
         supermercados.append(
             {
-                "nome": tags.get("name") or tags.get("brand") or "Supermercado",
+                "nome": nome,
                 "distancia_km": round(_haversine_km(lat, lon, el_lat, el_lon), 2),
                 "lat": el_lat,
                 "lon": el_lon,

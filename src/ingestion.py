@@ -19,10 +19,11 @@ from src import config
 def _parse_metadata(text: str, filename: str) -> dict:
     nome_match = re.search(r"^#\s+(.+)$", text, re.MULTILINE)
     categoria_match = re.search(r"##\s*Categoria\s*\n+(.+)", text)
+    tempo_match = re.search(r"##\s*Tempo de preparaç[ãa]o\s*\n+(.+)", text)
     return {
-        "source": filename,
         "nome_prato": nome_match.group(1).strip() if nome_match else filename,
         "categoria": categoria_match.group(1).strip() if categoria_match else "Desconhecida",
+        "tempo_preparacao": tempo_match.group(1).strip() if tempo_match else "Desconhecido",
         "likes": 0,
         "dislikes": 0,
     }
@@ -152,7 +153,7 @@ def add_recipe_document(document: Document) -> None:
         contador += 1
 
     path.write_text(document.page_content, encoding="utf-8")
-    document.metadata["source"] = path.name
+    document.metadata.setdefault("tempo_preparacao", "Desconhecido")
     document.metadata.setdefault("likes", 0)
     document.metadata.setdefault("dislikes", 0)
 

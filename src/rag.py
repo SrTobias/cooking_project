@@ -164,7 +164,11 @@ def _ficha_to_document(ficha: FichaTecnica) -> Document:
     ]
     return Document(
         page_content="\n".join(linhas) + "\n",
-        metadata={"nome_prato": ficha.nome_prato, "categoria": ficha.categoria},
+        metadata={
+            "nome_prato": ficha.nome_prato,
+            "categoria": ficha.categoria,
+            "tempo_preparacao": ficha.tempo_preparacao,
+        },
     )
 
 

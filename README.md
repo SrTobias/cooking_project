@@ -80,6 +80,11 @@ formato (`# Nome do prato`, `## Categoria`, `## Porções base`, `## Tempo de pr
 `## Ingredientes`, `## Modo de preparação`) e volta a correr `python scripts/ingest.py`.
 Também são suportados ficheiros `.pdf` na mesma pasta.
 
+### Metadata indexada
+
+Cada chunk no Chroma guarda os seguintes campos de metadata: `nome_prato`, `categoria`,
+`tempo_preparacao` (extraído da secção "## Tempo de preparação"), `likes` e `dislikes`.
+
 ### Auto-enriquecimento da base de conhecimento
 
 Sempre que uma das 3 opções gera uma ficha técnica para um prato que ainda não existe na

@@ -80,6 +80,13 @@ formato (`# Nome do prato`, `## Categoria`, `## Porções base`, `## Tempo de pr
 `## Ingredientes`, `## Modo de preparação`) e volta a correr `python scripts/ingest.py`.
 Também são suportados ficheiros `.pdf` na mesma pasta.
 
+### Auto-enriquecimento da base de conhecimento
+
+Sempre que uma das 3 opções gera uma ficha técnica para um prato que ainda não existe na
+coleção `cooking_project` (por nome, ignorando acentos/maiúsculas), essa receita é
+automaticamente guardada em `data/recipes/gerado_<nome-do-prato>.txt` e adicionada ao
+índice Chroma — fica disponível de imediato para futuras pesquisas/recuperações.
+
 ## LangSmith
 
 Com `LANGCHAIN_API_KEY` configurado, todas as chamadas ao LLM ficam visíveis no dashboard

@@ -3,6 +3,7 @@ gera Embeddings e persiste no ChromaDB (Vector store)."""
 
 import re
 import shutil
+import unicodedata
 from pathlib import Path
 
 import chromadb
@@ -115,3 +116,36 @@ def index_exists() -> bool:
         except Exception:
             return False
     return Path(config.CHROMA_DIR).exists()
+
+
+def _normalize_nome(nome: str) -> str:
+    sem_acentos = unicodedata.normalize("NFKD", nome).encode("ascii", "ignore").decode("ascii")
+    return sem_acentos.strip().lower()
+
+
+def _slugify(nome: str) -> str:
+    return re.sub(r"[^a-z0-9]+", "_", _normalize_nome(nome)).strip("_") or "receita"
+
+
+def recipe_exists(nome_prato: str) -> bool:
+    """Verifica se já existe uma receita com este nome (a menos de acentos/maiúsculas) na coleção."""
+    vectorstore = load_vectorstore()
+    data = vectorstore.get(include=["metadatas"])
+    nomes_existentes = {_normalize_nome(m.get("nome_prato", "")) for m in data["metadatas"]}
+    return _normalize_nome(nome_prato) in nomes_existentes
+
+
+def add_recipe_document(document: Document) -> None:
+    """Persiste uma nova receita (gerada pelo LLM) em data/recipes/ e adiciona-a ao índice Chroma."""
+    slug = _slugify(document.metadata["nome_prato"])
+    path = config.RECIPES_DIR / f"gerado_{slug}.txt"
+    contador = 2
+    while path.exists():
+        path = config.RECIPES_DIR / f"gerado_{slug}_{contador}.txt"
+        contador += 1
+
+    path.write_text(document.page_content, encoding="utf-8")
+    document.metadata["source"] = path.name
+
+    vectorstore = load_vectorstore()
+    vectorstore.add_documents(split_documents([document]))

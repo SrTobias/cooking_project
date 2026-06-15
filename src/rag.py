@@ -10,13 +10,14 @@ from __future__ import annotations
 
 import random
 
+from langchain_core.documents import Document
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.tracers.context import collect_runs
 from langchain_openai import ChatOpenAI
 from pydantic import BaseModel, Field
 
 from src import config
-from src.ingestion import load_vectorstore
+from src.ingestion import add_recipe_document, load_vectorstore, recipe_exists
 
 TIPOS_REFEICAO = ["Qualquer", "Sopa", "Prato principal", "Sobremesa"]
 
@@ -132,6 +133,40 @@ def _invoke_with_tracing(chain, inputs: dict) -> tuple[FichaTecnica, str | None]
     return result, run_id
 
 
+def _ficha_to_document(ficha: FichaTecnica) -> Document:
+    linhas = [
+        f"# {ficha.nome_prato}",
+        "",
+        "## Categoria",
+        ficha.categoria,
+        "",
+        "## Porções base",
+        f"{ficha.porcoes} pessoas",
+        "",
+        "## Tempo de preparação",
+        ficha.tempo_preparacao,
+        "",
+        "## Ingredientes",
+        *(f"- {ing.quantidade} de {ing.nome}" for ing in ficha.ingredientes),
+        "",
+        "## Modo de preparação",
+        *(f"{idx}. {passo}" for idx, passo in enumerate(ficha.modo_preparacao, start=1)),
+    ]
+    return Document(
+        page_content="\n".join(linhas) + "\n",
+        metadata={"nome_prato": ficha.nome_prato, "categoria": ficha.categoria},
+    )
+
+
+def _guardar_se_nova(ficha: FichaTecnica) -> None:
+    """Se o prato sugerido/pedido ainda não constar da coleção, adiciona-o ao índice Chroma."""
+    try:
+        if not recipe_exists(ficha.nome_prato):
+            add_recipe_document(_ficha_to_document(ficha))
+    except Exception:
+        pass
+
+
 def gerar_opcao1(ingredientes_disponiveis: list[str], pessoas: int) -> tuple[FichaTecnica, str | None]:
     retriever = get_retriever(k=4)
     query = "Receita que utilize estes ingredientes: " + ", ".join(ingredientes_disponiveis)
@@ -143,7 +178,9 @@ def gerar_opcao1(ingredientes_disponiveis: list[str], pessoas: int) -> tuple[Fic
         "context": _format_docs(docs),
         "pessoas": pessoas,
     }
-    return _invoke_with_tracing(chain, inputs)
+    ficha, run_id = _invoke_with_tracing(chain, inputs)
+    _guardar_se_nova(ficha)
+    return ficha, run_id
 
 
 def gerar_opcao2(nome_prato: str, pessoas: int) -> tuple[FichaTecnica, str | None]:
@@ -156,7 +193,9 @@ def gerar_opcao2(nome_prato: str, pessoas: int) -> tuple[FichaTecnica, str | Non
         "context": _format_docs(docs),
         "pessoas": pessoas,
     }
-    return _invoke_with_tracing(chain, inputs)
+    ficha, run_id = _invoke_with_tracing(chain, inputs)
+    _guardar_se_nova(ficha)
+    return ficha, run_id
 
 
 def _sample_context(tipo_refeicao: str | None, amostra: int = 5) -> str:
@@ -184,4 +223,6 @@ def gerar_opcao3(pessoas: int, tipo_refeicao: str | None = None) -> tuple[FichaT
         "pessoas": pessoas,
         "tipo_refeicao_txt": tipo_txt,
     }
-    return _invoke_with_tracing(chain, inputs)
+    ficha, run_id = _invoke_with_tracing(chain, inputs)
+    _guardar_se_nova(ficha)
+    return ficha, run_id

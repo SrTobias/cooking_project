@@ -7,6 +7,17 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+# No Streamlit Community Cloud não existe ficheiro .env: as chaves são configuradas em
+# "Settings -> Secrets" (formato TOML) e expostas via st.secrets. Copiamos para os.environ
+# para que o resto do código (e scripts fora do Streamlit) continue a usar apenas os.environ.
+try:
+    import streamlit as st
+
+    for _key, _value in st.secrets.items():
+        os.environ.setdefault(_key, str(_value))
+except Exception:
+    pass
+
 # Caminhos
 BASE_DIR = Path(__file__).resolve().parent.parent
 RECIPES_DIR = BASE_DIR / "data" / "recipes"

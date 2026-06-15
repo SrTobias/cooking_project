@@ -30,6 +30,10 @@ LANGCHAIN_TRACING_V2 = os.environ.get("LANGCHAIN_TRACING_V2", "false")
 LANGCHAIN_API_KEY = os.environ.get("LANGCHAIN_API_KEY")
 LANGCHAIN_PROJECT = os.environ.get("LANGCHAIN_PROJECT", "cooking_project")
 
+# Retrieval
+# Score mínimo de relevância (0-1) para um documento recuperado ser usado como contexto.
+RELEVANCE_THRESHOLD = float(os.environ.get("RELEVANCE_THRESHOLD", "0.25"))
+
 # Supermercados
 MAX_RADIUS_KM = 20
 OVERPASS_URL = "https://overpass-api.de/api/interpreter"

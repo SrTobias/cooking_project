@@ -87,6 +87,21 @@ coleção `cooking_project` (por nome, ignorando acentos/maiúsculas), essa rece
 automaticamente guardada em `data/recipes/gerado_<nome-do-prato>.txt` e adicionada ao
 índice Chroma — fica disponível de imediato para futuras pesquisas/recuperações.
 
+### Recuperação de receitas (likes + relevância)
+
+`retrieve_with_likes` (em `src/rag.py`) procura `fetch_k` candidatos por semelhança,
+descarta os que tiverem um score de relevância abaixo de `RELEVANCE_THRESHOLD` (0-1,
+configurável via variável de ambiente, default `0.25`) e reordena os restantes pelos likes
+líquidos (likes - dislikes), para que as receitas mais bem avaliadas apareçam primeiro no
+contexto dado ao LLM. Se nenhum candidato atingir o threshold, mantém-se o mais relevante
+para evitar contexto vazio.
+
+### Performance
+
+A ligação ao Chroma (cliente Chroma Cloud/local + embeddings) é cacheada em memória
+(`load_vectorstore`, com `lru_cache`), evitando recriar a ligação a cada pedido e reduzindo
+a latência das gerações.
+
 ## LangSmith
 
 Com `LANGCHAIN_API_KEY` configurado, todas as chamadas ao LLM ficam visíveis no dashboard

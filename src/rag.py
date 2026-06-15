@@ -104,10 +104,16 @@ completa), com as quantidades já ajustadas a {pessoas} pessoas."""
 
 
 def retrieve_with_likes(query: str, k: int, fetch_k: int | None = None) -> list[Document]:
-    """Recupera os fetch_k documentos mais semelhantes e reordena-os pelos likes líquidos
+    """Recupera os fetch_k documentos mais semelhantes, descarta os pouco relevantes para a
+    query (score < RELEVANCE_THRESHOLD) e reordena os restantes pelos likes líquidos
     (likes - dislikes), para que receitas mais bem avaliadas apareçam primeiro no contexto."""
     vectorstore = load_vectorstore()
-    candidatos = vectorstore.similarity_search(query, k=fetch_k or k * 3)
+    pares = vectorstore.similarity_search_with_relevance_scores(query, k=fetch_k or k * 2)
+
+    candidatos = [doc for doc, score in pares if score >= config.RELEVANCE_THRESHOLD]
+    if not candidatos and pares:
+        candidatos = [pares[0][0]]
+
     candidatos.sort(key=lambda d: d.metadata.get("likes", 0) - d.metadata.get("dislikes", 0), reverse=True)
     return candidatos[:k]
 

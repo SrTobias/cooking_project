@@ -4,6 +4,7 @@ gera Embeddings e persiste no ChromaDB (Vector store)."""
 import re
 import shutil
 import unicodedata
+from functools import lru_cache
 from pathlib import Path
 
 import chromadb
@@ -100,8 +101,12 @@ def build_vectorstore() -> Chroma:
     )
 
 
+@lru_cache(maxsize=1)
 def load_vectorstore() -> Chroma:
-    """Abre o índice Chroma já persistido (local ou Chroma Cloud, usado pela aplicação)."""
+    """Abre o índice Chroma já persistido (local ou Chroma Cloud, usado pela aplicação).
+
+    O resultado é cacheado em memória (lru_cache) para evitar recriar a ligação ao
+    Chroma Cloud e o cliente de embeddings em cada pedido, o que reduz a latência."""
     return Chroma(
         client=_get_chroma_client(),
         collection_name=config.COLLECTION_NAME,

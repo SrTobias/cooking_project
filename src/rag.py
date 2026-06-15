@@ -84,9 +84,14 @@ TASK_OPCAO2 = """O utilizador quer preparar o seguinte prato: "{nome_prato}"
 CONTEXTO (receitas da base de dados):
 {context}
 
-Se o prato pedido corresponder (ou for muito semelhante) a uma receita do contexto, usa-a como
-base. Caso contrário, gera a ficha técnica com o teu conhecimento culinário, mantendo o mesmo
-formato. Gera a ficha técnica completa para {pessoas} pessoas.
+Usa uma receita do contexto como base SOMENTE se for o MESMO prato que "{nome_prato}" (mesmo
+nome, sinónimo direto ou variação ortográfica/regional do mesmo nome). Pratos apenas parecidos
+ou da mesma categoria (ex: outro prato de carne ao forno) NÃO contam como o mesmo prato.
+
+Se nenhuma receita do contexto corresponder ao mesmo prato, ignora os ingredientes e o modo de
+preparação do contexto e gera a ficha técnica de "{nome_prato}" a partir do teu conhecimento
+culinário geral sobre este prato, mantendo apenas o formato/estilo das fichas técnicas do
+contexto. Gera a ficha técnica completa para {pessoas} pessoas.
 
 No campo "ingredientes_em_falta", lista TODOS os ingredientes da receita (lista de compras
 completa), com as quantidades já ajustadas a {pessoas} pessoas."""

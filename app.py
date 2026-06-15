@@ -151,17 +151,20 @@ def _render_supermercados() -> None:
         st.info("Não foram encontrados supermercados nesse raio.")
         return
 
-    st.table(
-        [
-            {
-                "Supermercado": ("⭐ " if s["recomendado"] else "") + s["nome"],
-                "Distância (km)": s["distancia_km"],
-                "Endereço": s["endereco"] or "—",
-            }
-            for s in supermercados
-        ]
-    )
     st.caption("⭐ = cadeia recomendada")
+
+    for s in supermercados:
+        with st.container(border=True):
+            col_info, col_link = st.columns([5, 1])
+            with col_info:
+                nome = ("⭐ " if s["recomendado"] else "") + s["nome"]
+                st.markdown(f"**{nome}**")
+                if s["endereco"]:
+                    st.caption(s["endereco"])
+                st.caption(f"📍 {s['distancia_km']} km")
+            with col_link:
+                maps_url = f"https://www.google.com/maps/search/?api=1&query={s['lat']},{s['lon']}"
+                st.link_button("Ver ↗", maps_url, use_container_width=True)
 
     mapa = [{"lat": lat, "lon": lon}] + [{"lat": s["lat"], "lon": s["lon"]} for s in supermercados]
     st.map(mapa, latitude="lat", longitude="lon")

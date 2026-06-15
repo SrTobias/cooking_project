@@ -64,6 +64,25 @@ def _format_address(tags: dict) -> str:
     return ", ".join(partes)
 
 
+def _query_overpass(query: str) -> list[dict]:
+    """Envia a query aos mirrors da Overpass API definidos em config.OVERPASS_URLS,
+    tentando o próximo em caso de erro/timeout (ex: 504 do servidor principal)."""
+    erro = None
+    for url in config.OVERPASS_URLS:
+        try:
+            response = requests.post(
+                url,
+                data={"data": query},
+                headers={"User-Agent": config.NOMINATIM_USER_AGENT},
+                timeout=30,
+            )
+            response.raise_for_status()
+            return response.json().get("elements", [])
+        except requests.exceptions.RequestException as exc:
+            erro = exc
+    raise RuntimeError(f"Todos os servidores Overpass falharam: {erro}") from erro
+
+
 def find_supermarkets(lat: float, lon: float, radius_km: float = config.MAX_RADIUS_KM) -> list[dict]:
     """Procura supermercados num raio (km) à volta de (lat, lon) usando a Overpass API.
 
@@ -76,14 +95,7 @@ def find_supermarkets(lat: float, lon: float, radius_km: float = config.MAX_RADI
     node["shop"="supermarket"](around:{radius_m},{lat},{lon});
     out;
     """
-    response = requests.post(
-        config.OVERPASS_URL,
-        data={"data": query},
-        headers={"User-Agent": config.NOMINATIM_USER_AGENT},
-        timeout=30,
-    )
-    response.raise_for_status()
-    elements = response.json().get("elements", [])
+    elements = _query_overpass(query)
 
     supermercados = []
     for el in elements:

@@ -36,7 +36,12 @@ RELEVANCE_THRESHOLD = float(os.environ.get("RELEVANCE_THRESHOLD", "0.25"))
 
 # Supermercados
 MAX_RADIUS_KM = 20
-OVERPASS_URL = "https://overpass-api.de/api/interpreter"
+# Mirrors da Overpass API, tentados por ordem (o principal devolve por vezes 504 sob carga).
+OVERPASS_URLS = [
+    "https://overpass-api.de/api/interpreter",
+    "https://overpass.kumi.systems/api/interpreter",
+    "https://overpass.openstreetmap.fr/api/interpreter",
+]
 NOMINATIM_USER_AGENT = "cooking-rag-app"
 
 # Preços

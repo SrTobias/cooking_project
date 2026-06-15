@@ -17,7 +17,9 @@ Pipeline de query:
 - `src/ingestion.py` — carrega as receitas, divide em chunks e gera/persiste o índice Chroma
 - `src/rag.py` — schemas (`FichaTecnica`) e as 3 chains (opções 1/2/3)
 - `src/observability.py` — ativa o tracing do LangSmith e envia feedback
-- `src/supermarkets.py` — geocoding (Nominatim) + procura de supermercados (Overpass/OSM)
+- `src/supermarkets.py` — geocoding (Nominatim) + procura de supermercados (Overpass/OSM,
+  com fallback automático entre vários mirrors em `config.OVERPASS_URLS` em caso de
+  erro/timeout, ex: 504 do servidor principal)
 - `src/pricing.py` — estimativa do custo da lista de compras
 - `app.py` — interface Streamlit
 

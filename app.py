@@ -88,7 +88,7 @@ def _render_lista_compras(ficha: FichaTecnica, ficha_key: str) -> None:
     show_key = f"show_precos_{ficha_key}"
     result_key = f"precos_result_{ficha_key}"
 
-    if col2.button("💳 Estimar preços", key=f"btn_precos_{ficha_key}"):
+    if col2.button("💳 Estimar preços", key=f"btn_precos_{ficha_key}", use_container_width=True):
         st.session_state[show_key] = True
 
     if st.session_state.get(show_key):
@@ -114,11 +114,12 @@ def _render_lista_compras(ficha: FichaTecnica, ficha_key: str) -> None:
 
 
 def _render_supermercados(ficha_key: str) -> None:
-    st.markdown("#### Onde comprar perto de ti")
+    col1, col2 = st.columns([4, 1])
+    col1.markdown("#### Onde comprar perto de ti")
 
     show_key = f"show_supermercados_{ficha_key}"
 
-    if st.button("📍 Encontrar supermercados perto", key=f"btn_supermercados_{ficha_key}"):
+    if col2.button("📍 Encontrar supermercados perto", key=f"btn_supermercados_{ficha_key}", use_container_width=True):
         st.session_state[show_key] = True
 
     if not st.session_state.get(show_key):
@@ -269,5 +270,5 @@ if "resultado" in st.session_state:
     st.divider()
     with st.container(border=True):
         _render_lista_compras(ficha, ficha_key)
-        st.divider()
+        st.write("")
         _render_supermercados(ficha_key)

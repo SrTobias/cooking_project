@@ -184,10 +184,11 @@ def _render_supermercados(ficha_key: str) -> None:
         st.info("Não foram encontrados supermercados nesse raio.")
         return
 
-    _LIMITE_INICIAL = 5
-    show_all_key = f"show_all_supermercados_{ficha_key}"
-    mostrar_todos = st.session_state.get(show_all_key, False)
-    visiveis = supermercados if mostrar_todos else supermercados[:_LIMITE_INICIAL]
+    _PASSO = 5
+    count_key = f"count_supermercados_{ficha_key}"
+    if count_key not in st.session_state:
+        st.session_state[count_key] = _PASSO
+    visiveis = supermercados[:st.session_state[count_key]]
 
     st.caption("⭐ = cadeia recomendada")
 
@@ -204,10 +205,11 @@ def _render_supermercados(ficha_key: str) -> None:
                 maps_url = f"https://www.google.com/maps/search/?api=1&query={s['lat']},{s['lon']}"
                 st.link_button("Ver ↗", maps_url, use_container_width=True)
 
-    restantes = len(supermercados) - _LIMITE_INICIAL
-    if not mostrar_todos and restantes > 0:
-        if st.button(f"Mostrar mais {restantes} supermercado{'s' if restantes != 1 else ''}", key=f"btn_mais_{ficha_key}"):
-            st.session_state[show_all_key] = True
+    restantes = len(supermercados) - st.session_state[count_key]
+    if restantes > 0:
+        proximos = min(_PASSO, restantes)
+        if st.button(f"Mostrar mais {proximos} supermercado{'s' if proximos != 1 else ''}", key=f"btn_mais_{ficha_key}"):
+            st.session_state[count_key] += _PASSO
             st.rerun()
 
     mapa = [{"lat": lat, "lon": lon}] + [{"lat": s["lat"], "lon": s["lon"]} for s in supermercados]

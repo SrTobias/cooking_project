@@ -1,68 +1,260 @@
 {
   "_comment": "Preços médios aproximados (EUR) em supermercados portugueses. Usado apenas para estimativas. unidade: kg | l | unidade",
-
-  "batata palha": {"preco": 6.00, "unidade": "kg"},
-  "batata": {"preco": 0.90, "unidade": "kg"},
-  "bacalhau": {"preco": 18.00, "unidade": "kg"},
-  "ovo": {"preco": 0.20, "unidade": "unidade"},
-  "cebola": {"preco": 1.00, "unidade": "kg"},
-  "alho frances": {"preco": 1.80, "unidade": "kg"},
-  "alho": {"preco": 6.00, "unidade": "kg"},
-  "azeite": {"preco": 5.50, "unidade": "l"},
-  "oleo": {"preco": 2.00, "unidade": "l"},
-  "salsa": {"preco": 0.80, "unidade": "unidade"},
-  "coentros": {"preco": 0.80, "unidade": "unidade"},
-  "azeitona": {"preco": 6.50, "unidade": "kg"},
-  "sal": {"preco": 0.50, "unidade": "kg"},
-  "pimenta": {"preco": 18.00, "unidade": "kg"},
-  "couve": {"preco": 1.30, "unidade": "kg"},
-  "chourico": {"preco": 9.00, "unidade": "kg"},
-  "pao de forma": {"preco": 1.50, "unidade": "unidade"},
-  "pao alentejano": {"preco": 2.50, "unidade": "kg"},
-  "papo seco": {"preco": 0.20, "unidade": "unidade"},
-  "carne de vaca": {"preco": 12.00, "unidade": "kg"},
-  "carne picada": {"preco": 7.00, "unidade": "kg"},
-  "carne de porco": {"preco": 6.50, "unidade": "kg"},
-  "linguica": {"preco": 8.50, "unidade": "kg"},
-  "fiambre": {"preco": 7.50, "unidade": "kg"},
-  "salsicha": {"preco": 5.00, "unidade": "kg"},
-  "queijo parmesao": {"preco": 18.00, "unidade": "kg"},
-  "queijo": {"preco": 8.50, "unidade": "kg"},
-  "molho de cerveja": {"preco": 3.00, "unidade": "unidade"},
-  "pato": {"preco": 7.00, "unidade": "kg"},
-  "frango": {"preco": 5.50, "unidade": "kg"},
-  "arroz para risotto": {"preco": 2.50, "unidade": "kg"},
-  "arroz": {"preco": 1.20, "unidade": "kg"},
-  "feijao": {"preco": 2.80, "unidade": "kg"},
-  "grao de bico": {"preco": 2.50, "unidade": "kg"},
-  "entrecosto": {"preco": 6.50, "unidade": "kg"},
-  "toucinho": {"preco": 5.00, "unidade": "kg"},
-  "farinheira": {"preco": 8.00, "unidade": "kg"},
-  "cenoura": {"preco": 0.90, "unidade": "kg"},
-  "nabo": {"preco": 1.00, "unidade": "kg"},
-  "courgette": {"preco": 1.50, "unidade": "kg"},
-  "polvo": {"preco": 15.00, "unidade": "kg"},
-  "camarao": {"preco": 15.00, "unidade": "kg"},
-  "peixe": {"preco": 10.00, "unidade": "kg"},
-  "louro": {"preco": 0.50, "unidade": "unidade"},
-  "alecrim": {"preco": 0.80, "unidade": "unidade"},
-  "esparguete": {"preco": 1.30, "unidade": "kg"},
-  "massa": {"preco": 1.30, "unidade": "kg"},
-  "tomate pelado": {"preco": 1.80, "unidade": "kg"},
-  "tomate": {"preco": 1.50, "unidade": "kg"},
-  "cogumelos": {"preco": 5.50, "unidade": "kg"},
-  "caldo de legumes": {"preco": 1.50, "unidade": "l"},
-  "vinho branco": {"preco": 4.00, "unidade": "l"},
-  "manteiga": {"preco": 7.50, "unidade": "kg"},
-  "limao": {"preco": 0.30, "unidade": "unidade"},
-  "leite": {"preco": 0.85, "unidade": "l"},
-  "natas": {"preco": 2.50, "unidade": "l"},
-  "noz moscada": {"preco": 40.00, "unidade": "kg"},
-  "colorau": {"preco": 15.00, "unidade": "kg"},
-  "acucar": {"preco": 1.00, "unidade": "kg"},
-  "canela": {"preco": 18.00, "unidade": "kg"},
-  "farinha": {"preco": 0.90, "unidade": "kg"},
-  "chocolate negro": {"preco": 12.00, "unidade": "kg"},
-  "chocolate": {"preco": 10.00, "unidade": "kg"},
-  "essencia de vanilha": {"preco": 3.00, "unidade": "unidade"}
+  "_updated_at": "2026-06-16",
+  "batata palha": {
+    "preco": 2.5,
+    "unidade": "kg"
+  },
+  "batata": {
+    "preco": 1.0,
+    "unidade": "kg"
+  },
+  "bacalhau": {
+    "preco": 15.0,
+    "unidade": "kg"
+  },
+  "ovo": {
+    "preco": 0.25,
+    "unidade": "unidade"
+  },
+  "cebola": {
+    "preco": 1.2,
+    "unidade": "kg"
+  },
+  "alho frances": {
+    "preco": 1.5,
+    "unidade": "kg"
+  },
+  "alho": {
+    "preco": 3.0,
+    "unidade": "kg"
+  },
+  "azeite": {
+    "preco": 5.0,
+    "unidade": "l"
+  },
+  "oleo": {
+    "preco": 2.0,
+    "unidade": "l"
+  },
+  "salsa": {
+    "preco": 1.0,
+    "unidade": "unidade"
+  },
+  "coentros": {
+    "preco": 1.0,
+    "unidade": "unidade"
+  },
+  "azeitona": {
+    "preco": 3.0,
+    "unidade": "kg"
+  },
+  "sal": {
+    "preco": 0.5,
+    "unidade": "kg"
+  },
+  "pimenta": {
+    "preco": 2.5,
+    "unidade": "kg"
+  },
+  "couve": {
+    "preco": 1.5,
+    "unidade": "kg"
+  },
+  "chourico": {
+    "preco": 8.0,
+    "unidade": "kg"
+  },
+  "pao de forma": {
+    "preco": 1.5,
+    "unidade": "unidade"
+  },
+  "pao alentejano": {
+    "preco": 2.0,
+    "unidade": "unidade"
+  },
+  "papo seco": {
+    "preco": 0.3,
+    "unidade": "unidade"
+  },
+  "carne de vaca": {
+    "preco": 10.0,
+    "unidade": "kg"
+  },
+  "carne picada": {
+    "preco": 8.0,
+    "unidade": "kg"
+  },
+  "carne de porco": {
+    "preco": 7.0,
+    "unidade": "kg"
+  },
+  "linguica": {
+    "preco": 9.0,
+    "unidade": "kg"
+  },
+  "fiambre": {
+    "preco": 6.0,
+    "unidade": "kg"
+  },
+  "salsicha": {
+    "preco": 5.0,
+    "unidade": "kg"
+  },
+  "queijo parmesao": {
+    "preco": 15.0,
+    "unidade": "kg"
+  },
+  "queijo": {
+    "preco": 8.0,
+    "unidade": "kg"
+  },
+  "molho de cerveja": {
+    "preco": 2.0,
+    "unidade": "l"
+  },
+  "pato": {
+    "preco": 12.0,
+    "unidade": "kg"
+  },
+  "frango": {
+    "preco": 6.0,
+    "unidade": "kg"
+  },
+  "arroz para risotto": {
+    "preco": 2.5,
+    "unidade": "kg"
+  },
+  "arroz": {
+    "preco": 1.5,
+    "unidade": "kg"
+  },
+  "feijao": {
+    "preco": 1.8,
+    "unidade": "kg"
+  },
+  "grao de bico": {
+    "preco": 2.0,
+    "unidade": "kg"
+  },
+  "entrecosto": {
+    "preco": 9.0,
+    "unidade": "kg"
+  },
+  "toucinho": {
+    "preco": 7.0,
+    "unidade": "kg"
+  },
+  "farinheira": {
+    "preco": 8.0,
+    "unidade": "kg"
+  },
+  "cenoura": {
+    "preco": 1.0,
+    "unidade": "kg"
+  },
+  "nabo": {
+    "preco": 1.2,
+    "unidade": "kg"
+  },
+  "courgette": {
+    "preco": 2.0,
+    "unidade": "kg"
+  },
+  "polvo": {
+    "preco": 15.0,
+    "unidade": "kg"
+  },
+  "camarao": {
+    "preco": 20.0,
+    "unidade": "kg"
+  },
+  "peixe": {
+    "preco": 10.0,
+    "unidade": "kg"
+  },
+  "louro": {
+    "preco": 1.5,
+    "unidade": "unidade"
+  },
+  "alecrim": {
+    "preco": 1.5,
+    "unidade": "unidade"
+  },
+  "esparguete": {
+    "preco": 1.5,
+    "unidade": "kg"
+  },
+  "massa": {
+    "preco": 1.2,
+    "unidade": "kg"
+  },
+  "tomate pelado": {
+    "preco": 1.5,
+    "unidade": "kg"
+  },
+  "tomate": {
+    "preco": 2.0,
+    "unidade": "kg"
+  },
+  "cogumelos": {
+    "preco": 3.0,
+    "unidade": "kg"
+  },
+  "caldo de legumes": {
+    "preco": 1.5,
+    "unidade": "unidade"
+  },
+  "vinho branco": {
+    "preco": 5.0,
+    "unidade": "l"
+  },
+  "manteiga": {
+    "preco": 3.0,
+    "unidade": "kg"
+  },
+  "limao": {
+    "preco": 0.5,
+    "unidade": "unidade"
+  },
+  "leite": {
+    "preco": 1.0,
+    "unidade": "l"
+  },
+  "natas": {
+    "preco": 1.5,
+    "unidade": "l"
+  },
+  "noz moscada": {
+    "preco": 2.0,
+    "unidade": "kg"
+  },
+  "colorau": {
+    "preco": 1.5,
+    "unidade": "kg"
+  },
+  "acucar": {
+    "preco": 1.0,
+    "unidade": "kg"
+  },
+  "canela": {
+    "preco": 2.0,
+    "unidade": "kg"
+  },
+  "farinha": {
+    "preco": 1.0,
+    "unidade": "kg"
+  },
+  "chocolate negro": {
+    "preco": 3.0,
+    "unidade": "kg"
+  },
+  "chocolate": {
+    "preco": 2.5,
+    "unidade": "kg"
+  },
+  "essencia de vanilha": {
+    "preco": 5.0,
+    "unidade": "l"
+  }
 }

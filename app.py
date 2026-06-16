@@ -45,9 +45,15 @@ def _render_ficha(ficha: FichaTecnica) -> None:
     st.subheader(f"🍽️ {ficha.nome_prato}")
 
     col1, col2, col3 = st.columns(3)
-    col1.metric("Categoria", ficha.categoria)
-    col2.metric("Porções", ficha.porcoes)
-    col3.metric("Tempo de preparação", ficha.tempo_preparacao)
+    with col1:
+        st.caption("Categoria")
+        st.markdown(f"**{ficha.categoria}**")
+    with col2:
+        st.caption("Porções")
+        st.markdown(f"**{ficha.porcoes}**")
+    with col3:
+        st.caption("Tempo de preparação")
+        st.markdown(f"**{ficha.tempo_preparacao}**")
 
     st.markdown("#### 🧂 Ingredientes")
     st.table([{"Ingrediente": i.nome, "Quantidade": i.quantidade} for i in ficha.ingredientes])

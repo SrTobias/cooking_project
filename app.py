@@ -14,7 +14,7 @@ from src import config
 from src.ingestion import index_exists, update_recipe_feedback
 from src.observability import send_feedback, setup_langsmith
 from src.pricing import estimar_custo
-from src.rag import TIPOS_REFEICAO, FichaTecnica, gerar_opcao1, gerar_opcao2, gerar_opcao3
+from src.rag import FichaTecnica, gerar_opcao1, gerar_opcao2, gerar_opcao3
 from src.supermarkets import filter_by_distance, find_supermarkets, geocode_address
 
 st.set_page_config(page_title="Assistente de Cozinha RAG", page_icon="🍳", layout="wide")
@@ -225,7 +225,11 @@ with tab1:
         height=150,
         key="opcao1_ingredientes",
     )
-    pessoas1 = st.selectbox("Para quantas pessoas?", options=PESSOAS_OPCOES, index=3, key="opcao1_pessoas")
+    col_p1, col_d1 = st.columns(2)
+    with col_p1:
+        pessoas1 = st.selectbox("Para quantas pessoas?", options=PESSOAS_OPCOES, index=3, key="opcao1_pessoas")
+    with col_d1:
+        dieta1 = st.segmented_control("Dieta", options=["🍖 Como de tudo", "🥗 Vegetariano", "🌱 Vegan"], default="🍖 Como de tudo", key="opcao1_dieta")
 
     if st.button("Sugerir prato", key="opcao1_btn"):
         ingredientes = [linha.strip() for linha in ingredientes_texto.splitlines() if linha.strip()]
@@ -234,7 +238,7 @@ with tab1:
         else:
             try:
                 with st.spinner("A pensar num prato..."):
-                    ficha, run_id = gerar_opcao1(ingredientes, pessoas1)
+                    ficha, run_id = gerar_opcao1(ingredientes, pessoas1, dieta1)
                 st.session_state["resultado"] = (ficha, run_id)
             except Exception as exc:
                 st.error(f"Ocorreu um erro ao gerar a sugestão: {exc}")
@@ -257,13 +261,16 @@ with tab2:
 
 with tab3:
     st.markdown("Deixa a IA sugerir um prato para ti.")
-    tipo_refeicao = st.selectbox("Tipo de refeição", options=TIPOS_REFEICAO, key="opcao3_tipo")
-    pessoas3 = st.selectbox("Para quantas pessoas?", options=PESSOAS_OPCOES, index=3, key="opcao3_pessoas")
+    col_p3, col_d3 = st.columns(2)
+    with col_p3:
+        pessoas3 = st.selectbox("Para quantas pessoas?", options=PESSOAS_OPCOES, index=3, key="opcao3_pessoas")
+    with col_d3:
+        dieta3 = st.segmented_control("Dieta", options=["🍖 Como de tudo", "🥗 Vegetariano", "🌱 Vegan"], default="🍖 Como de tudo", key="opcao3_dieta")
 
     if st.button("Sugerir", key="opcao3_btn"):
         try:
             with st.spinner("A escolher um prato..."):
-                ficha, run_id = gerar_opcao3(pessoas3, tipo_refeicao)
+                ficha, run_id = gerar_opcao3(pessoas3, dieta=dieta3)
             st.session_state["resultado"] = (ficha, run_id)
         except Exception as exc:
             st.error(f"Ocorreu um erro ao gerar a sugestão: {exc}")

@@ -68,7 +68,7 @@ Regras importantes:
 
 TASK_OPCAO1 = """O utilizador tem os seguintes ingredientes disponíveis em casa:
 {ingredientes_disponiveis}
-
+{restricao_dieta}
 CONTEXTO (receitas da base de dados):
 {context}
 
@@ -97,7 +97,7 @@ No campo "ingredientes_em_falta", lista TODOS os ingredientes da receita (lista 
 completa), com as quantidades já ajustadas a {pessoas} pessoas."""
 
 TASK_OPCAO3 = """O utilizador pede uma sugestão de prato{tipo_refeicao_txt}.
-
+{restricao_dieta}
 CONTEXTO (receitas da base de dados):
 {context}
 
@@ -186,7 +186,15 @@ def _guardar_se_nova(ficha: FichaTecnica) -> None:
         pass
 
 
-def gerar_opcao1(ingredientes_disponiveis: list[str], pessoas: int) -> tuple[FichaTecnica, str | None]:
+def _restricao_dieta_txt(dieta: str | None) -> str:
+    if dieta == "🥗 Vegetariano":
+        return "Restrição alimentar: o utilizador é vegetariano — sugere apenas pratos sem carne nem peixe.\n"
+    if dieta == "🌱 Vegan":
+        return "Restrição alimentar: o utilizador é vegan — sugere apenas pratos sem qualquer produto de origem animal (carne, peixe, ovos, lacticínios, mel).\n"
+    return ""
+
+
+def gerar_opcao1(ingredientes_disponiveis: list[str], pessoas: int, dieta: str | None = None) -> tuple[FichaTecnica, str | None]:
     query = "Receita que utilize estes ingredientes: " + ", ".join(ingredientes_disponiveis)
     docs = retrieve_with_likes(query, k=4)
 
@@ -195,6 +203,7 @@ def gerar_opcao1(ingredientes_disponiveis: list[str], pessoas: int) -> tuple[Fic
         "ingredientes_disponiveis": "\n".join(f"- {item}" for item in ingredientes_disponiveis),
         "context": _format_docs(docs),
         "pessoas": pessoas,
+        "restricao_dieta": _restricao_dieta_txt(dieta),
     }
     ficha, run_id = _invoke_with_tracing(chain, inputs)
     _guardar_se_nova(ficha)
@@ -230,7 +239,7 @@ def _sample_context(tipo_refeicao: str | None, amostra: int = 5) -> str:
     return "\n\n---\n\n".join(doc for doc, _ in escolhidos)
 
 
-def gerar_opcao3(pessoas: int, tipo_refeicao: str | None = None) -> tuple[FichaTecnica, str | None]:
+def gerar_opcao3(pessoas: int, tipo_refeicao: str | None = None, dieta: str | None = None) -> tuple[FichaTecnica, str | None]:
     context = _sample_context(tipo_refeicao)
     tipo_txt = f" do tipo '{tipo_refeicao}'" if tipo_refeicao and tipo_refeicao != "Qualquer" else ""
 
@@ -239,6 +248,7 @@ def gerar_opcao3(pessoas: int, tipo_refeicao: str | None = None) -> tuple[FichaT
         "context": context,
         "pessoas": pessoas,
         "tipo_refeicao_txt": tipo_txt,
+        "restricao_dieta": _restricao_dieta_txt(dieta),
     }
     ficha, run_id = _invoke_with_tracing(chain, inputs)
     _guardar_se_nova(ficha)

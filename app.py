@@ -184,9 +184,14 @@ def _render_supermercados(ficha_key: str) -> None:
         st.info("Não foram encontrados supermercados nesse raio.")
         return
 
+    _LIMITE_INICIAL = 5
+    show_all_key = f"show_all_supermercados_{ficha_key}"
+    mostrar_todos = st.session_state.get(show_all_key, False)
+    visiveis = supermercados if mostrar_todos else supermercados[:_LIMITE_INICIAL]
+
     st.caption("⭐ = cadeia recomendada")
 
-    for s in supermercados:
+    for s in visiveis:
         with st.container(border=True):
             col_info, col_link = st.columns([5, 1])
             with col_info:
@@ -198,6 +203,12 @@ def _render_supermercados(ficha_key: str) -> None:
             with col_link:
                 maps_url = f"https://www.google.com/maps/search/?api=1&query={s['lat']},{s['lon']}"
                 st.link_button("Ver ↗", maps_url, use_container_width=True)
+
+    restantes = len(supermercados) - _LIMITE_INICIAL
+    if not mostrar_todos and restantes > 0:
+        if st.button(f"Mostrar mais {restantes} supermercado{'s' if restantes != 1 else ''}", key=f"btn_mais_{ficha_key}"):
+            st.session_state[show_all_key] = True
+            st.rerun()
 
     mapa = [{"lat": lat, "lon": lon}] + [{"lat": s["lat"], "lon": s["lon"]} for s in supermercados]
     st.map(mapa, latitude="lat", longitude="lon")

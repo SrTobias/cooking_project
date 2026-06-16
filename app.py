@@ -125,26 +125,32 @@ def _render_supermercados(ficha_key: str) -> None:
     if not st.session_state.get(show_key):
         return
 
-    modo = st.radio(
-        "Como queres indicar a tua localização?",
-        ["Usar a minha localização", "Indicar morada"],
-        horizontal=True,
-        key=f"loc_modo_{ficha_key}",
-    )
-    raio_km = st.slider(
-        "Até que raio de distância queres procurar (km)?",
-        min_value=1,
-        max_value=config.MAX_RADIUS_KM,
-        value=config.MAX_RADIUS_KM,
-        key=f"loc_raio_{ficha_key}",
-    )
+    col_loc, col_raio = st.columns([3, 2])
+    with col_loc:
+        modo = st.segmented_control(
+            "Localização",
+            options=["📍 Usar localização", "✏️ Indicar morada"],
+            default="📍 Usar localização",
+            key=f"loc_modo_{ficha_key}",
+        )
+    with col_raio:
+        raio_km = st.segmented_control(
+            "Raio de pesquisa",
+            options=[1, 5, 10, 20],
+            format_func=lambda x: f"{x} km",
+            default=config.MAX_RADIUS_KM,
+            key=f"loc_raio_{ficha_key}",
+        )
+        if raio_km is None:
+            raio_km = config.MAX_RADIUS_KM
 
     coords = None
-    if modo == "Usar a minha localização":
-        st.caption("Clica no botão e permite o acesso à localização no browser.")
+    if modo != "✏️ Indicar morada":
         localizacao = streamlit_geolocation()
         if localizacao and localizacao.get("latitude") is not None:
             coords = (localizacao["latitude"], localizacao["longitude"])
+        elif localizacao and localizacao.get("latitude") is None:
+            st.caption("Permite o acesso à localização no browser para continuar.")
     else:
         endereco = st.text_input(
             "Endereço ou código postal", placeholder="ex: Avenida da Liberdade, Lisboa", key=f"loc_endereco_{ficha_key}"

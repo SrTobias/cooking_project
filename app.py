@@ -232,7 +232,7 @@ with tab1:
         height=150,
         key="opcao1_ingredientes",
     )
-    col_p1, col_d1, col_t1 = st.columns(3)
+    col_p1, col_d1, col_t1, _ = st.columns([1, 3, 3, 2])
     with col_p1:
         pessoas1 = st.selectbox("Para quantas pessoas?", options=PESSOAS_OPCOES, index=3, key="opcao1_pessoas")
     with col_d1:
@@ -255,7 +255,7 @@ with tab1:
 with tab2:
     st.markdown("Indica o nome do prato que queres preparar.")
     nome_prato = st.text_input("Prato", placeholder="ex: Caldo Verde", key="opcao2_nome")
-    col_p2, col_t2 = st.columns(2)
+    col_p2, col_t2, _ = st.columns([1, 3, 5])
     with col_p2:
         pessoas2 = st.selectbox("Para quantas pessoas?", options=PESSOAS_OPCOES, index=3, key="opcao2_pessoas")
     with col_t2:
@@ -274,7 +274,7 @@ with tab2:
 
 with tab3:
     st.markdown("Deixa a IA sugerir um prato para ti.")
-    col_p3, col_d3, col_t3 = st.columns(3)
+    col_p3, col_d3, col_t3, _ = st.columns([1, 3, 3, 2])
     with col_p3:
         pessoas3 = st.selectbox("Para quantas pessoas?", options=PESSOAS_OPCOES, index=3, key="opcao3_pessoas")
     with col_d3:

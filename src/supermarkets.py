@@ -38,7 +38,7 @@ def _normalize(text: str) -> str:
 def geocode_address(address: str) -> tuple[float, float] | None:
     """Converte um endereço/código postal em (latitude, longitude) via Nominatim."""
     geolocator = Nominatim(user_agent=config.NOMINATIM_USER_AGENT)
-    location = geolocator.geocode(address, timeout=10)
+    location = geolocator.geocode(address, country_codes="pt", timeout=10)
     if location is None:
         return None
     return location.latitude, location.longitude

@@ -46,7 +46,7 @@ LANGCHAIN_PROJECT = os.environ.get("LANGCHAIN_PROJECT", "cooking_project")
 RELEVANCE_THRESHOLD = float(os.environ.get("RELEVANCE_THRESHOLD", "0.25"))
 
 # Supermercados
-MAX_RADIUS_KM = 20
+MAX_RADIUS_KM = 1
 # Mirrors da Overpass API, tentados por ordem (o principal devolve por vezes 504 sob carga).
 OVERPASS_URLS = [
     "https://overpass-api.de/api/interpreter",

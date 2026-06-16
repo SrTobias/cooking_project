@@ -210,7 +210,21 @@ def gerar_opcao1(ingredientes_disponiveis: list[str], pessoas: int, dieta: str |
     return ficha, run_id
 
 
+def _validar_prato_culinario(nome: str) -> None:
+    """Lança ValueError se o nome não for um prato ou receita de culinária."""
+    llm = ChatOpenAI(model=config.LLM_MODEL, temperature=0, max_tokens=3)
+    resp = llm.invoke([
+        {"role": "user", "content": (
+            f'"{nome}" é um prato de culinária ou receita de cozinha? '
+            f'Responde APENAS com "sim" ou "não".'
+        )}
+    ])
+    if "sim" not in resp.content.strip().lower():
+        raise ValueError(f'"{nome}" não parece ser um prato de culinária. Indica o nome de uma receita ou prato.')
+
+
 def gerar_opcao2(nome_prato: str, pessoas: int) -> tuple[FichaTecnica, str | None]:
+    _validar_prato_culinario(nome_prato)
     docs = retrieve_with_likes(nome_prato, k=3)
 
     chain = _build_chain(TASK_OPCAO2)

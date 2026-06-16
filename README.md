@@ -34,10 +34,15 @@ Pipeline de query:
    ```
 
 2. Copia `.env.example` para `.env` e configura:
-   - `OPENAI_API_KEY` (obrigatório) — usado para o LLM (`gpt-4o-mini` por defeito) e para os
-     embeddings (`text-embedding-3-small`)
+   - `OPENAI_API_KEY` (obrigatório) — usado para o LLM e para os embeddings
+   - `LLM_MODEL` (opcional, default `gpt-4o-mini`) — modelo OpenAI a usar para geração
+   - `EMBEDDING_MODEL` (opcional, default `text-embedding-3-small`) — modelo de embeddings
+   - `RELEVANCE_THRESHOLD` (opcional, default `0.25`) — score mínimo para usar um documento
+     como contexto; ver secção [Recuperação de receitas](#recuperação-de-receitas-likes--relevância)
    - `LANGCHAIN_API_KEY` (opcional) — se definido, ativa o tracing/dashboard/feedback no
      [LangSmith](https://smith.langchain.com)
+   - `LANGCHAIN_TRACING_V2=true` e `LANGCHAIN_PROJECT` (opcional) — necessários para o
+     tracing funcionar corretamente no LangSmith
    - `CHROMA_API_KEY` / `CHROMA_TENANT` / `CHROMA_DATABASE` (opcional) — se definidos, o
      índice é guardado no [Chroma Cloud](https://www.trychroma.com/) em vez de um diretório
      local `chroma_db/`. Deixa por preencher para usar ChromaDB local (sem conta nem chave).
@@ -55,10 +60,14 @@ Pipeline de query:
    streamlit run app.py
    ```
 
+   **Streamlit Cloud:** a app suporta deploy direto no [Streamlit Cloud](https://streamlit.io/cloud).
+   Nesse caso, define as variáveis acima em **Settings → Secrets** (formato TOML) em vez de
+   usar um ficheiro `.env` — a app lê automaticamente `st.secrets` como fallback.
+
 ## Funcionalidades
 
 A aplicação tem 3 modos de interação, todos com seleção do número de pessoas (as
-quantidades dos ingredientes são escaladas automaticamente):
+quantidades dos ingredientes são ajustadas automaticamente):
 
 1. **💡 Tenho estes ingredientes** — descreve o que tens em casa e recebe uma sugestão de
    prato com a ficha técnica completa.
@@ -70,9 +79,10 @@ quantidades dos ingredientes são escaladas automaticamente):
 Em todos os casos, é apresentada uma secção **🛒 Lista de compras e supermercados próximos**
 com:
 - estimativa do custo dos ingredientes que faltam comprar (preços médios indicativos);
-- lista de supermercados num raio até 20 km do endereço indicado na barra lateral, com
-  filtro por distância e indicação ⭐ para cadeias recomendadas (Continente, Pingo Doce,
-  Lidl, Mercadona, etc.).
+- cards individuais por supermercado (nome, endereço, distância) num raio até 20 km do
+  endereço indicado na barra lateral, com filtro por distância, indicação ⭐ para cadeias
+  recomendadas (Continente, Pingo Doce, Lidl, Mercadona, etc.) e botão **"Ver ↗"** que
+  abre diretamente a localização no Google Maps.
 
 ## Receitas (corpus)
 
@@ -117,7 +127,26 @@ do [LangSmith](https://smith.langchain.com) (projeto `LANGCHAIN_PROJECT`), inclu
 Tracing, Datasets e Feedback (os botões 👍/👎 na app enviam feedback associado ao traço da
 geração).
 
-## Aviso sobre preços
+## Preços dos ingredientes
 
-As estimativas de custo baseiam-se numa tabela de preços médios (`data/precos_ingredientes.json`)
-e servem apenas como referência aproximada — não refletem os preços reais em loja.
+As estimativas de custo usam duas fontes, por esta ordem:
+
+1. **`data/precos_ingredientes.json`** — tabela de preços médios para ingredientes comuns em
+   supermercados portugueses. O campo `_updated_at` indica a data da última atualização.
+2. **LLM como fallback** — se um ingrediente não for encontrado na tabela, é feita uma chamada
+   ao LLM (`LLM_MODEL`) para estimar o preço em supermercados portugueses. O resultado é
+   cacheado em memória durante a sessão. A coluna "correspondência" na lista de compras mostra
+   `(via LLM)` para estes casos.
+
+### Atualizar a tabela de preços
+
+Para refrescar os preços de todos os ingredientes da tabela com estimativas recentes do LLM:
+
+```bash
+python scripts/update_prices.py
+```
+
+Usa `--dry-run` para ver o resultado sem gravar o ficheiro. Recomenda-se correr este script
+de 2 a 4 vezes por ano para manter as estimativas aproximadas da realidade.
+
+Os valores são sempre **referências aproximadas** — não refletem os preços reais em loja.

@@ -7,6 +7,8 @@ import json
 import re
 import unicodedata
 
+import openai
+
 from src import config
 from src.rag import Ingrediente
 
@@ -52,6 +54,37 @@ _UNIT_CONVERSIONS: dict[str, tuple[str, float]] = {
 PESO_UNIDADE_KG = 0.15
 VOLUME_UNIDADE_L = 0.2
 
+_LLM_PRICE_CACHE: dict[str, dict] = {}
+
+
+def _get_preco_via_llm(nome_ingrediente: str) -> tuple[dict, str]:
+    """Estima o preço de um ingrediente desconhecido via LLM como fallback."""
+    chave_cache = _normalize(nome_ingrediente)
+    if chave_cache in _LLM_PRICE_CACHE:
+        return _LLM_PRICE_CACHE[chave_cache], "(via LLM)"
+    try:
+        client = openai.OpenAI(api_key=config.OPENAI_API_KEY)
+        resp = client.chat.completions.create(
+            model=config.LLM_MODEL,
+            messages=[{
+                "role": "user",
+                "content": (
+                    f'Qual é o preço médio atual de "{nome_ingrediente}" em supermercados '
+                    f'portugueses (Continente, Pingo Doce, Lidl)? '
+                    f'Responde APENAS com JSON válido: {{"preco": <número em EUR>, "unidade": "<kg|l|unidade>"}}'
+                ),
+            }],
+            response_format={"type": "json_object"},
+            temperature=0,
+        )
+        result = json.loads(resp.choices[0].message.content)
+        if isinstance(result.get("preco"), (int, float)) and result.get("unidade") in ("kg", "l", "unidade"):
+            _LLM_PRICE_CACHE[chave_cache] = result
+            return result, "(via LLM)"
+    except Exception:
+        pass
+    return {"preco": config.DEFAULT_PRICE_EUR, "unidade": "unidade"}, "(estimativa genérica)"
+
 
 def _normalize(text: str) -> str:
     text = unicodedata.normalize("NFKD", text)
@@ -86,11 +119,11 @@ def parse_quantidade(quantidade: str) -> tuple[float, str]:
     return valor, "unidade"
 
 
-def match_preco(nome_ingrediente: str) -> tuple[dict, str | None]:
+def match_preco(nome_ingrediente: str) -> tuple[dict, str]:
     """Encontra a entrada de preço mais próxima para um ingrediente.
 
-    Devolve (entrada_de_preco, chave_correspondida). Se nada corresponder, devolve um
-    preço genérico e chave None.
+    Devolve (entrada_de_preco, chave_correspondida). Se nada corresponder no JSON local,
+    usa o LLM como fallback e devolve "(via LLM)" como chave.
     """
     nome = _normalize(nome_ingrediente)
 
@@ -103,7 +136,7 @@ def match_preco(nome_ingrediente: str) -> tuple[dict, str | None]:
         if candidatos:
             return _PRECOS[candidatos[0]], candidatos[0]
 
-    return {"preco": config.DEFAULT_PRICE_EUR, "unidade": "unidade"}, None
+    return _get_preco_via_llm(nome_ingrediente)
 
 
 def _calcular_custo(valor: float, unidade_pedida: str, entrada: dict) -> float:
@@ -138,7 +171,7 @@ def estimar_custo(ingredientes: list[Ingrediente]) -> tuple[float, list[dict]]:
                 "nome": ingrediente.nome,
                 "quantidade": ingrediente.quantidade,
                 "preco_estimado": custo,
-                "correspondencia": chave or "(estimativa genérica)",
+                "correspondencia": chave,
             }
         )
 

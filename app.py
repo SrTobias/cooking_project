@@ -77,48 +77,65 @@ def _render_feedback(ficha: FichaTecnica, run_id: str | None) -> None:
         st.rerun()
 
 
-def _render_lista_compras(ficha: FichaTecnica) -> None:
-    st.markdown("## 🛒 Lista de compras")
+def _render_lista_compras(ficha: FichaTecnica, ficha_key: str) -> None:
+    col1, col2 = st.columns([4, 1])
+    col1.markdown("#### Custo estimado da lista")
 
     if not ficha.ingredientes_em_falta:
         st.info("Não é necessário comprar nada — já tens todos os ingredientes!")
         return
 
-    total, detalhe = estimar_custo(ficha.ingredientes_em_falta)
+    show_key = f"show_precos_{ficha_key}"
+    result_key = f"precos_result_{ficha_key}"
 
-    st.markdown("#### Ingredientes a comprar e custo estimado")
-    st.table(
-        [
-            {
-                "Ingrediente": d["nome"],
-                "Quantidade": d["quantidade"],
-                "Preço estimado (€)": f"{d['preco_estimado']:.2f}",
-            }
-            for d in detalhe
-        ]
-    )
-    st.metric("Custo total estimado", f"{total:.2f} €")
-    st.caption(
-        "Os preços são estimativas médias indicativas e podem não refletir os valores "
-        "reais em loja."
-    )
+    if col2.button("💳 Estimar preços", key=f"btn_precos_{ficha_key}"):
+        st.session_state[show_key] = True
+
+    if st.session_state.get(show_key):
+        if result_key not in st.session_state:
+            with st.spinner("A calcular preços..."):
+                st.session_state[result_key] = estimar_custo(ficha.ingredientes_em_falta)
+        total, detalhe = st.session_state[result_key]
+        st.table(
+            [
+                {
+                    "Ingrediente": d["nome"],
+                    "Quantidade": d["quantidade"],
+                    "Preço estimado (€)": f"{d['preco_estimado']:.2f}",
+                }
+                for d in detalhe
+            ]
+        )
+        st.metric("Custo total estimado", f"{total:.2f} €")
+        st.caption(
+            "Os preços são estimativas médias indicativas e podem não refletir os valores "
+            "reais em loja."
+        )
 
 
-def _render_supermercados() -> None:
-    st.markdown("## 📍 Supermercados na zona")
+def _render_supermercados(ficha_key: str) -> None:
+    st.markdown("#### Onde comprar perto de ti")
+
+    show_key = f"show_supermercados_{ficha_key}"
+
+    if st.button("📍 Encontrar supermercados perto", key=f"btn_supermercados_{ficha_key}"):
+        st.session_state[show_key] = True
+
+    if not st.session_state.get(show_key):
+        return
 
     modo = st.radio(
         "Como queres indicar a tua localização?",
         ["Usar a minha localização", "Indicar morada"],
         horizontal=True,
-        key="loc_modo",
+        key=f"loc_modo_{ficha_key}",
     )
     raio_km = st.slider(
         "Até que raio de distância queres procurar (km)?",
         min_value=1,
         max_value=config.MAX_RADIUS_KM,
         value=config.MAX_RADIUS_KM,
-        key="loc_raio",
+        key=f"loc_raio_{ficha_key}",
     )
 
     coords = None
@@ -129,7 +146,7 @@ def _render_supermercados() -> None:
             coords = (localizacao["latitude"], localizacao["longitude"])
     else:
         endereco = st.text_input(
-            "Endereço ou código postal", placeholder="ex: Avenida da Liberdade, Lisboa", key="loc_endereco"
+            "Endereço ou código postal", placeholder="ex: Avenida da Liberdade, Lisboa", key=f"loc_endereco_{ficha_key}"
         )
         if endereco:
             coords = _geocode(endereco)
@@ -245,10 +262,12 @@ with tab3:
 
 if "resultado" in st.session_state:
     ficha, run_id = st.session_state["resultado"]
+    ficha_key = run_id or ficha.nome_prato.lower().replace(" ", "_")
     st.divider()
     _render_ficha(ficha)
     _render_feedback(ficha, run_id)
     st.divider()
-    _render_lista_compras(ficha)
-    st.divider()
-    _render_supermercados()
+    with st.container(border=True):
+        _render_lista_compras(ficha, ficha_key)
+        st.divider()
+        _render_supermercados(ficha_key)

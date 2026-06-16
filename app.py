@@ -21,6 +21,7 @@ st.set_page_config(page_title="Assistente de Cozinha RAG", page_icon="🍳", lay
 
 langsmith_ativo = setup_langsmith()
 PESSOAS_OPCOES = list(range(1, 11))
+_TEMPO_MAP = {"30 min": 30, "60 min": 60, "90 min": 90}
 
 
 @st.cache_data(show_spinner=False, ttl=3600)
@@ -225,11 +226,13 @@ with tab1:
         height=150,
         key="opcao1_ingredientes",
     )
-    col_p1, col_d1 = st.columns(2)
+    col_p1, col_d1, col_t1 = st.columns(3)
     with col_p1:
         pessoas1 = st.selectbox("Para quantas pessoas?", options=PESSOAS_OPCOES, index=3, key="opcao1_pessoas")
     with col_d1:
         dieta1 = st.segmented_control("Dieta", options=["🍖 Como de tudo", "🥗 Vegetariano", "🌱 Vegan"], default="🍖 Como de tudo", key="opcao1_dieta")
+    with col_t1:
+        tempo1 = st.segmented_control("Tempo máximo", options=["Sem limite", "30 min", "60 min", "90 min"], default="Sem limite", key="opcao1_tempo")
 
     if st.button("Sugerir prato", key="opcao1_btn"):
         ingredientes = [linha.strip() for linha in ingredientes_texto.splitlines() if linha.strip()]
@@ -238,7 +241,7 @@ with tab1:
         else:
             try:
                 with st.spinner("A pensar num prato..."):
-                    ficha, run_id = gerar_opcao1(ingredientes, pessoas1, dieta1)
+                    ficha, run_id = gerar_opcao1(ingredientes, pessoas1, dieta1, _TEMPO_MAP.get(tempo1))
                 st.session_state["resultado"] = (ficha, run_id)
             except Exception as exc:
                 st.error(f"Ocorreu um erro ao gerar a sugestão: {exc}")
@@ -246,7 +249,11 @@ with tab1:
 with tab2:
     st.markdown("Indica o nome do prato que queres preparar.")
     nome_prato = st.text_input("Prato", placeholder="ex: Caldo Verde", key="opcao2_nome")
-    pessoas2 = st.selectbox("Para quantas pessoas?", options=PESSOAS_OPCOES, index=3, key="opcao2_pessoas")
+    col_p2, col_t2 = st.columns(2)
+    with col_p2:
+        pessoas2 = st.selectbox("Para quantas pessoas?", options=PESSOAS_OPCOES, index=3, key="opcao2_pessoas")
+    with col_t2:
+        tempo2 = st.segmented_control("Tempo máximo", options=["Sem limite", "30 min", "60 min", "90 min"], default="Sem limite", key="opcao2_tempo")
 
     if st.button("Gerar receita", key="opcao2_btn"):
         if not nome_prato.strip():
@@ -254,23 +261,25 @@ with tab2:
         else:
             try:
                 with st.spinner("A preparar a ficha técnica..."):
-                    ficha, run_id = gerar_opcao2(nome_prato.strip(), pessoas2)
+                    ficha, run_id = gerar_opcao2(nome_prato.strip(), pessoas2, _TEMPO_MAP.get(tempo2))
                 st.session_state["resultado"] = (ficha, run_id)
             except Exception as exc:
                 st.error(f"Ocorreu um erro ao gerar a receita: {exc}")
 
 with tab3:
     st.markdown("Deixa a IA sugerir um prato para ti.")
-    col_p3, col_d3 = st.columns(2)
+    col_p3, col_d3, col_t3 = st.columns(3)
     with col_p3:
         pessoas3 = st.selectbox("Para quantas pessoas?", options=PESSOAS_OPCOES, index=3, key="opcao3_pessoas")
     with col_d3:
         dieta3 = st.segmented_control("Dieta", options=["🍖 Como de tudo", "🥗 Vegetariano", "🌱 Vegan"], default="🍖 Como de tudo", key="opcao3_dieta")
+    with col_t3:
+        tempo3 = st.segmented_control("Tempo máximo", options=["Sem limite", "30 min", "60 min", "90 min"], default="Sem limite", key="opcao3_tempo")
 
     if st.button("Sugerir", key="opcao3_btn"):
         try:
             with st.spinner("A escolher um prato..."):
-                ficha, run_id = gerar_opcao3(pessoas3, dieta=dieta3)
+                ficha, run_id = gerar_opcao3(pessoas3, dieta=dieta3, tempo_max=_TEMPO_MAP.get(tempo3))
             st.session_state["resultado"] = (ficha, run_id)
         except Exception as exc:
             st.error(f"Ocorreu um erro ao gerar a sugestão: {exc}")

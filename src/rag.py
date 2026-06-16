@@ -68,7 +68,7 @@ Regras importantes:
 
 TASK_OPCAO1 = """O utilizador tem os seguintes ingredientes disponíveis em casa:
 {ingredientes_disponiveis}
-{restricao_dieta}
+{restricao_dieta}{restricao_tempo}
 CONTEXTO (receitas da base de dados):
 {context}
 
@@ -80,7 +80,7 @@ NÃO tem em casa (compara com a lista de ingredientes disponíveis acima) e que 
 comprar, com as quantidades já ajustadas a {pessoas} pessoas."""
 
 TASK_OPCAO2 = """O utilizador quer preparar o seguinte prato: "{nome_prato}"
-
+{restricao_tempo}
 CONTEXTO (receitas da base de dados):
 {context}
 
@@ -97,7 +97,7 @@ No campo "ingredientes_em_falta", lista TODOS os ingredientes da receita (lista 
 completa), com as quantidades já ajustadas a {pessoas} pessoas."""
 
 TASK_OPCAO3 = """O utilizador pede uma sugestão de prato{tipo_refeicao_txt}.
-{restricao_dieta}
+{restricao_dieta}{restricao_tempo}
 CONTEXTO (receitas da base de dados):
 {context}
 
@@ -186,6 +186,12 @@ def _guardar_se_nova(ficha: FichaTecnica) -> None:
         pass
 
 
+def _restricao_tempo_txt(tempo_max: int | None) -> str:
+    if tempo_max:
+        return f"Restrição de tempo: o prato deve ter um tempo de confeção máximo de {tempo_max} minutos.\n"
+    return ""
+
+
 def _restricao_dieta_txt(dieta: str | None) -> str:
     if dieta == "🥗 Vegetariano":
         return "Restrição alimentar: o utilizador é vegetariano — sugere apenas pratos sem carne nem peixe.\n"
@@ -194,7 +200,7 @@ def _restricao_dieta_txt(dieta: str | None) -> str:
     return ""
 
 
-def gerar_opcao1(ingredientes_disponiveis: list[str], pessoas: int, dieta: str | None = None) -> tuple[FichaTecnica, str | None]:
+def gerar_opcao1(ingredientes_disponiveis: list[str], pessoas: int, dieta: str | None = None, tempo_max: int | None = None) -> tuple[FichaTecnica, str | None]:
     query = "Receita que utilize estes ingredientes: " + ", ".join(ingredientes_disponiveis)
     docs = retrieve_with_likes(query, k=4)
 
@@ -204,6 +210,7 @@ def gerar_opcao1(ingredientes_disponiveis: list[str], pessoas: int, dieta: str |
         "context": _format_docs(docs),
         "pessoas": pessoas,
         "restricao_dieta": _restricao_dieta_txt(dieta),
+        "restricao_tempo": _restricao_tempo_txt(tempo_max),
     }
     ficha, run_id = _invoke_with_tracing(chain, inputs)
     _guardar_se_nova(ficha)
@@ -223,7 +230,7 @@ def _validar_prato_culinario(nome: str) -> None:
         raise ValueError(f'"{nome}" não parece ser um prato de culinária. Indica o nome de uma receita ou prato.')
 
 
-def gerar_opcao2(nome_prato: str, pessoas: int) -> tuple[FichaTecnica, str | None]:
+def gerar_opcao2(nome_prato: str, pessoas: int, tempo_max: int | None = None) -> tuple[FichaTecnica, str | None]:
     _validar_prato_culinario(nome_prato)
     docs = retrieve_with_likes(nome_prato, k=3)
 
@@ -232,6 +239,7 @@ def gerar_opcao2(nome_prato: str, pessoas: int) -> tuple[FichaTecnica, str | Non
         "nome_prato": nome_prato,
         "context": _format_docs(docs),
         "pessoas": pessoas,
+        "restricao_tempo": _restricao_tempo_txt(tempo_max),
     }
     ficha, run_id = _invoke_with_tracing(chain, inputs)
     _guardar_se_nova(ficha)
@@ -253,7 +261,7 @@ def _sample_context(tipo_refeicao: str | None, amostra: int = 5) -> str:
     return "\n\n---\n\n".join(doc for doc, _ in escolhidos)
 
 
-def gerar_opcao3(pessoas: int, tipo_refeicao: str | None = None, dieta: str | None = None) -> tuple[FichaTecnica, str | None]:
+def gerar_opcao3(pessoas: int, tipo_refeicao: str | None = None, dieta: str | None = None, tempo_max: int | None = None) -> tuple[FichaTecnica, str | None]:
     context = _sample_context(tipo_refeicao)
     tipo_txt = f" do tipo '{tipo_refeicao}'" if tipo_refeicao and tipo_refeicao != "Qualquer" else ""
 
@@ -263,6 +271,7 @@ def gerar_opcao3(pessoas: int, tipo_refeicao: str | None = None, dieta: str | No
         "pessoas": pessoas,
         "tipo_refeicao_txt": tipo_txt,
         "restricao_dieta": _restricao_dieta_txt(dieta),
+        "restricao_tempo": _restricao_tempo_txt(tempo_max),
     }
     ficha, run_id = _invoke_with_tracing(chain, inputs)
     _guardar_se_nova(ficha)

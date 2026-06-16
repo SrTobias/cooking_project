@@ -28,9 +28,11 @@ def _geocode(endereco: str):
     return geocode_address(endereco)
 
 
+_MAX_FETCH_RADIUS_KM = 20
+
 @st.cache_data(show_spinner=False, ttl=3600)
 def _supermercados(lat: float, lon: float):
-    return find_supermarkets(lat, lon, radius_km=config.MAX_RADIUS_KM)
+    return find_supermarkets(lat, lon, radius_km=_MAX_FETCH_RADIUS_KM)
 
 
 @st.cache_data(show_spinner=False, ttl=300)

@@ -70,19 +70,21 @@ A aplicação tem 3 modos de interação, todos com seleção do número de pess
 quantidades dos ingredientes são ajustadas automaticamente):
 
 1. **💡 Tenho estes ingredientes** — descreve o que tens em casa e recebe uma sugestão de
-   prato com a ficha técnica completa.
+   prato com a ficha técnica completa. Inclui filtros de **preferência alimentar** (🍖 Como
+   de tudo / 🥗 Vegetariano / 🌱 Vegan) e **tempo máximo de confeção** (Sem limite / 30 /
+   60 / 90 min).
 2. **🍽️ Quero fazer este prato** — indica o prato que queres preparar e recebe a ficha
-   técnica (ingredientes + modo de preparação).
-3. **🎲 Surpreende-me** — a IA sugere um prato (com filtro opcional por tipo de refeição:
-   sopa, prato principal ou sobremesa).
+   técnica (ingredientes + modo de preparação). Inclui filtro de **tempo máximo de confeção**.
+   Entradas que não correspondam a pratos de culinária são rejeitadas antes de chamar o LLM.
+3. **🎲 Surpreende-me** — a IA sugere um prato livremente. Inclui filtros de **preferência
+   alimentar** e **tempo máximo de confeção**.
 
 Em todos os casos, é apresentada uma secção **🛒 Lista de compras e supermercados próximos**
 com:
 - estimativa do custo dos ingredientes que faltam comprar (preços médios indicativos);
-- cards individuais por supermercado (nome, endereço, distância) num raio até 20 km do
-  endereço indicado na barra lateral, com filtro por distância, indicação ⭐ para cadeias
-  recomendadas (Continente, Pingo Doce, Lidl, Mercadona, etc.) e botão **"Ver ↗"** que
-  abre diretamente a localização no Google Maps.
+- cards individuais por supermercado (nome, endereço, distância) com filtro de raio (1/5/10/20 km),
+  indicação ⭐ para cadeias recomendadas (Continente, Pingo Doce, Lidl, Mercadona, etc.) e
+  botão **"Ver ↗"** que abre diretamente a localização no Google Maps.
 
 ## Receitas (corpus)
 

@@ -76,8 +76,10 @@ Escolhe, de entre o contexto, o prato que melhor aproveita estes ingredientes (p
 ligeiramente a receita). Gera a ficha técnica completa para {pessoas} pessoas.
 
 No campo "ingredientes_em_falta", lista APENAS os ingredientes da receita que o utilizador
-NÃO tem em casa (compara com a lista de ingredientes disponíveis acima) e que precisa de
-comprar, com as quantidades já ajustadas a {pessoas} pessoas."""
+NÃO tem em casa e que precisa de comprar, com as quantidades já ajustadas a {pessoas} pessoas.
+IMPORTANTE: o utilizador tem SOMENTE os ingredientes listados acima e NADA MAIS — não assumas
+que tem ingredientes básicos como cebola, alho, azeite, sal ou pimenta a não ser que estejam
+na lista. Ingredientes com quantidade "q.b." não devem aparecer nesta lista."""
 
 TASK_OPCAO2 = """O utilizador quer preparar o seguinte prato: "{nome_prato}"
 {restricao_tempo}

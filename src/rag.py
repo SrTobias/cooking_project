@@ -203,6 +203,7 @@ def _restricao_dieta_txt(dieta: str | None) -> str:
 
 
 def gerar_opcao1(ingredientes_disponiveis: list[str], pessoas: int, dieta: str | None = None, tempo_max: int | None = None) -> tuple[FichaTecnica, str | None]:
+    _validar_ingredientes_culinarios(ingredientes_disponiveis)
     query = "Receita que utilize estes ingredientes: " + ", ".join(ingredientes_disponiveis)
     docs = retrieve_with_likes(query, k=4)
 
@@ -217,6 +218,23 @@ def gerar_opcao1(ingredientes_disponiveis: list[str], pessoas: int, dieta: str |
     ficha, run_id = _invoke_with_tracing(chain, inputs)
     _guardar_se_nova(ficha)
     return ficha, run_id
+
+
+def _validar_ingredientes_culinarios(ingredientes: list[str]) -> None:
+    """Lança ValueError se algum dos ingredientes não for um alimento ou ingrediente de cozinha."""
+    llm = ChatOpenAI(model=config.LLM_MODEL, temperature=0, max_tokens=5)
+    lista = ", ".join(f'"{i}"' for i in ingredientes)
+    resp = llm.invoke([
+        {"role": "user", "content": (
+            f"Os seguintes itens são TODOS alimentos ou ingredientes de culinária? {lista} "
+            f"Responde APENAS com \"sim\" ou \"não\"."
+        )}
+    ])
+    if "sim" not in resp.content.strip().lower():
+        raise ValueError(
+            "A lista de ingredientes contém itens que não são alimentos ou ingredientes de culinária. "
+            "Indica apenas ingredientes de cozinha (ex: arroz, frango, cebola)."
+        )
 
 
 def _validar_prato_culinario(nome: str) -> None:

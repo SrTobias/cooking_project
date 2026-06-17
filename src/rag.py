@@ -100,11 +100,12 @@ completa), com as quantidades já ajustadas a {pessoas} pessoas."""
 
 TASK_OPCAO3 = """O utilizador pede uma sugestão de prato{tipo_refeicao_txt}.
 {restricao_dieta}{restricao_tempo}
-CONTEXTO (receitas da base de dados):
+CONTEXTO (receitas da base de dados, usa como inspiração):
 {context}
 
-Escolhe UM prato do contexto para sugerir ao utilizador. Gera a ficha técnica completa para
-{pessoas} pessoas.
+Sugere UM prato da cozinha portuguesa. Podes escolher um do contexto ou sugerir qualquer outro
+prato português que consideres interessante — não estás limitado ao contexto. Gera a ficha
+técnica completa para {pessoas} pessoas.
 
 No campo "ingredientes_em_falta", lista TODOS os ingredientes da receita (lista de compras
 completa), com as quantidades já ajustadas a {pessoas} pessoas."""

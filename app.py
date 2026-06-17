@@ -118,7 +118,7 @@ def _render_lista_compras(ficha: FichaTecnica, ficha_key: str) -> None:
         st.metric("Custo total estimado", f"{total:.2f} €")
         st.caption(
             "Os preços são estimativas médias indicativas e podem não refletir os valores "
-            "reais em loja."
+            "reais em loja. Os ingredientes q.b não são incluidos na lista de compras."
         )
 
 

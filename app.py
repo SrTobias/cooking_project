@@ -90,7 +90,13 @@ def _render_lista_compras(ficha: FichaTecnica, ficha_key: str) -> None:
     col1, col2 = st.columns([4, 1])
     col1.markdown("#### Custo estimado da lista")
 
-    if not ficha.ingredientes_em_falta:
+    _QB = {"q.b.", "q.b", "quanto baste", "a gosto"}
+    ingredientes_a_comprar = [
+        i for i in ficha.ingredientes_em_falta
+        if i.quantidade.strip().lower() not in _QB
+    ]
+
+    if not ingredientes_a_comprar:
         st.info("Não é necessário comprar nada — já tens todos os ingredientes!")
         return
 
@@ -103,7 +109,7 @@ def _render_lista_compras(ficha: FichaTecnica, ficha_key: str) -> None:
     if st.session_state.get(show_key):
         if result_key not in st.session_state:
             with st.spinner("A calcular preços..."):
-                st.session_state[result_key] = estimar_custo(ficha.ingredientes_em_falta)
+                st.session_state[result_key] = estimar_custo(ingredientes_a_comprar)
         total, detalhe = st.session_state[result_key]
         st.table(
             [

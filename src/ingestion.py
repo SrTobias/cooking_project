@@ -93,10 +93,19 @@ def build_vectorstore() -> Chroma:
 
     if _cloud_enabled():
         client = _get_chroma_client()
+        # Tenta apagar a coleção existente (incluindo soft-deleted); ignora se não existir.
+        # Em caso de falha (ex: soft-deleted no Cloud), força recriação via get_or_create
+        # e limpa todos os documentos antes de indexar de novo.
         try:
             client.delete_collection(config.COLLECTION_NAME)
         except Exception:
-            pass
+            try:
+                col = client.get_or_create_collection(config.COLLECTION_NAME)
+                existing_ids = col.get()["ids"]
+                if existing_ids:
+                    col.delete(ids=existing_ids)
+            except Exception:
+                pass
     else:
         chroma_path = Path(config.CHROMA_DIR)
         if chroma_path.exists():

@@ -1,4 +1,4 @@
-# 🍳 Cooking for Dummies
+# 🍳 Assistente de Cozinha RAG
 
 Aplicação RAG (Retrieval-Augmented Generation) sobre receitas portuguesas, construída com
 **LangChain**, **ChromaDB**, **OpenAI** e **LangSmith**, com interface em **Streamlit**.

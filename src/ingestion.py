@@ -133,6 +133,32 @@ def load_vectorstore() -> Chroma:
     )
 
 
+# Fragmentos observados em erros do Chroma Cloud quando a coleção foi soft-deleted/recriada
+# entretanto (ex: "Some requested entity was not found... collection soft deleted").
+_STALE_COLLECTION_MARKERS = ("soft deleted", "not found", "does not exist")
+
+
+def _is_stale_collection_error(exc: Exception) -> bool:
+    texto = str(exc).lower()
+    return any(marcador in texto for marcador in _STALE_COLLECTION_MARKERS)
+
+
+def with_vectorstore(fn):
+    """Executa fn(vectorstore) usando a ligação Chroma cacheada (load_vectorstore).
+
+    Se a coleção tiver ficado soft-deleted/inacessível no Chroma Cloud (ex: recriada
+    entretanto fora da app), a ligação cacheada fica presa numa referência inválida e
+    continuaria a falhar indefinidamente. Neste caso, descarta-se a ligação cacheada e
+    tenta-se uma segunda vez com uma ligação nova, evitando ter de reiniciar a app à mão."""
+    try:
+        return fn(load_vectorstore())
+    except Exception as exc:
+        if not _is_stale_collection_error(exc):
+            raise
+        load_vectorstore.cache_clear()
+        return fn(load_vectorstore())
+
+
 def index_exists() -> bool:
     """Verifica se o índice Chroma já foi criado (local ou Chroma Cloud)."""
     if _cloud_enabled():
@@ -155,19 +181,22 @@ def _slugify(nome: str) -> str:
 
 def recipe_exists(nome_prato: str) -> bool:
     """Verifica se já existe uma receita com este nome (a menos de acentos/maiúsculas) na coleção."""
-    vectorstore = load_vectorstore()
-    data = vectorstore.get(include=["metadatas"])
-    nomes_existentes = {_normalize_nome(m.get("nome_prato", "")) for m in data["metadatas"]}
-    return _normalize_nome(nome_prato) in nomes_existentes
+
+    def _check(vectorstore: Chroma) -> bool:
+        data = vectorstore.get(include=["metadatas"])
+        nomes_existentes = {_normalize_nome(m.get("nome_prato", "")) for m in data["metadatas"]}
+        return _normalize_nome(nome_prato) in nomes_existentes
+
+    return with_vectorstore(_check)
 
 
 def add_recipe_document(document: Document) -> None:
     """Persiste uma nova receita (gerada pelo LLM) em data/recipes/ e adiciona-a ao índice Chroma."""
     slug = _slugify(document.metadata["nome_prato"])
-    path = config.RECIPES_DIR / f"gerado_{slug}.txt"
+    path = config.RECIPES_DIR / f"{slug}.txt"
     contador = 2
     while path.exists():
-        path = config.RECIPES_DIR / f"gerado_{slug}_{contador}.txt"
+        path = config.RECIPES_DIR / f"{slug}_{contador}.txt"
         contador += 1
 
     path.write_text(document.page_content, encoding="utf-8")
@@ -175,24 +204,26 @@ def add_recipe_document(document: Document) -> None:
     document.metadata.setdefault("likes", 0)
     document.metadata.setdefault("dislikes", 0)
 
-    vectorstore = load_vectorstore()
-    vectorstore.add_documents(split_documents([document]))
+    chunks = split_documents([document])
+    with_vectorstore(lambda vectorstore: vectorstore.add_documents(chunks))
 
 
 def update_recipe_feedback(nome_prato: str, gostou: bool) -> None:
     """Incrementa o contador likes/dislikes (metadata) de todos os chunks da receita indicada."""
-    vectorstore = load_vectorstore()
-    data = vectorstore.get(include=["metadatas"])
     nome_normalizado = _normalize_nome(nome_prato)
     campo = "likes" if gostou else "dislikes"
 
-    ids, metadatas = [], []
-    for id_, metadata in zip(data["ids"], data["metadatas"]):
-        if _normalize_nome(metadata.get("nome_prato", "")) == nome_normalizado:
-            metadata = dict(metadata)
-            metadata[campo] = metadata.get(campo, 0) + 1
-            ids.append(id_)
-            metadatas.append(metadata)
+    def _update(vectorstore: Chroma) -> None:
+        data = vectorstore.get(include=["metadatas"])
+        ids, metadatas = [], []
+        for id_, metadata in zip(data["ids"], data["metadatas"]):
+            if _normalize_nome(metadata.get("nome_prato", "")) == nome_normalizado:
+                metadata = dict(metadata)
+                metadata[campo] = metadata.get(campo, 0) + 1
+                ids.append(id_)
+                metadatas.append(metadata)
 
-    if ids:
-        vectorstore._collection.update(ids=ids, metadatas=metadatas)
+        if ids:
+            vectorstore._collection.update(ids=ids, metadatas=metadatas)
+
+    with_vectorstore(_update)

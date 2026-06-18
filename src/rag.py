@@ -17,7 +17,7 @@ from langchain_openai import ChatOpenAI
 from pydantic import BaseModel, Field
 
 from src import config
-from src.ingestion import add_recipe_document, load_vectorstore, recipe_exists, tempo_para_minutos
+from src.ingestion import add_recipe_document, recipe_exists, tempo_para_minutos, with_vectorstore
 
 
 class Ingrediente(BaseModel):
@@ -103,8 +103,9 @@ def retrieve_with_likes(query: str, k: int, fetch_k: int | None = None) -> list[
     """Recupera os fetch_k documentos mais semelhantes, descarta os pouco relevantes para a
     query (score < RELEVANCE_THRESHOLD) e reordena os restantes pelos likes líquidos
     (likes - dislikes), para que receitas mais bem avaliadas apareçam primeiro no contexto."""
-    vectorstore = load_vectorstore()
-    pares = vectorstore.similarity_search_with_relevance_scores(query, k=fetch_k or k * 2)
+    pares = with_vectorstore(
+        lambda vectorstore: vectorstore.similarity_search_with_relevance_scores(query, k=fetch_k or k * 2)
+    )
 
     candidatos = [doc for doc, score in pares if score >= config.RELEVANCE_THRESHOLD]
     if not candidatos and pares:
@@ -256,8 +257,7 @@ def gerar_opcao2(nome_prato: str, pessoas: int, tempo_max: int | None = None) ->
 
 
 def _sample_context(amostra: int = 5) -> str:
-    vectorstore = load_vectorstore()
-    data = vectorstore.get(include=["metadatas", "documents"])
+    data = with_vectorstore(lambda vectorstore: vectorstore.get(include=["metadatas", "documents"]))
     pares = list(zip(data["documents"], data["metadatas"]))
 
     escolhidos = random.sample(pares, k=min(amostra, len(pares)))

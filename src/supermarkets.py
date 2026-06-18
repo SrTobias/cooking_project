@@ -3,12 +3,17 @@
 from __future__ import annotations
 
 import math
+import time
 import unicodedata
 
 import requests
+from geopy.exc import GeocoderServiceError
 from geopy.geocoders import Nominatim
 
 from src import config
+
+GEOCODE_TENTATIVAS = 3
+GEOCODE_ESPERA_SEGUNDOS = 2
 
 RECOMMENDED_CHAINS = [
     "continente",
@@ -36,12 +41,26 @@ def _normalize(text: str) -> str:
 
 
 def geocode_address(address: str) -> tuple[float, float] | None:
-    """Converte um endereço/código postal em (latitude, longitude) via Nominatim."""
+    """Converte um endereço/código postal em (latitude, longitude) via Nominatim.
+
+    O Nominatim é um serviço gratuito e por vezes devolve erro de limite de taxa
+    (ex: tráfego partilhado no IP do Streamlit Cloud); tenta-se algumas vezes com
+    um pequeno intervalo antes de desistir.
+    """
     geolocator = Nominatim(user_agent=config.NOMINATIM_USER_AGENT)
-    location = geolocator.geocode(address, country_codes="pt", timeout=10)
-    if location is None:
-        return None
-    return location.latitude, location.longitude
+    ultimo_erro: Exception | None = None
+    for tentativa in range(GEOCODE_TENTATIVAS):
+        try:
+            location = geolocator.geocode(address, country_codes="pt", timeout=10)
+            return (location.latitude, location.longitude) if location else None
+        except GeocoderServiceError as exc:
+            ultimo_erro = exc
+            if tentativa < GEOCODE_TENTATIVAS - 1:
+                time.sleep(GEOCODE_ESPERA_SEGUNDOS * (tentativa + 1))
+
+    raise RuntimeError(
+        "Serviço de localização indisponível de momento. Tenta novamente dentro de alguns segundos."
+    ) from ultimo_erro
 
 
 def _haversine_km(lat1: float, lon1: float, lat2: float, lon2: float) -> float:

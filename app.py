@@ -172,9 +172,13 @@ def _render_supermercados(ficha_key: str) -> None:
             "Morada", placeholder="ex: Avenida da Liberdade, Lisboa", key=f"loc_endereco_{ficha_key}"
         )
         if endereco:
-            coords = _geocode(endereco)
-            if coords is None:
-                st.warning("Não foi possível localizar esse endereço. Verifica e tenta novamente.")
+            try:
+                coords = _geocode(endereco)
+            except Exception as exc:
+                st.warning(f"Não foi possível obter a localização: {exc}")
+            else:
+                if coords is None:
+                    st.warning("Não foi possível localizar esse endereço. Verifica e tenta novamente.")
 
     if coords is None:
         return

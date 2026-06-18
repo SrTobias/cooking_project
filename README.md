@@ -3,6 +3,11 @@
 Aplicação RAG (Retrieval-Augmented Generation) sobre receitas portuguesas, construída com
 **LangChain**, **ChromaDB**, **OpenAI** e **LangSmith**, com interface em **Streamlit**.
 
+## Forma de acesso
+
+- **Online:** [cooking-for-dummies.streamlit.app](https://cooking-for-dummies.streamlit.app)
+- **Local:** segue os passos em [Configuração](#configuração) e corre `streamlit run app.py`
+
 ## Arquitetura
 
 ```

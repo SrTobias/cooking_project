@@ -88,8 +88,9 @@ com:
 
 ## Receitas (corpus)
 
-`data/recipes/` contém ~20 receitas portuguesas em ficheiros `.txt` (peixe, carne,
-vegetariano, sopas e sobremesas). Para adicionar as tuas próprias receitas, segue o mesmo
+`data/recipes/` contém 50 receitas portuguesas em ficheiros `.txt` (peixe, carne,
+vegetariano, sopas e sobremesas), com o nome do ficheiro a corresponder ao nome do prato.
+Para adicionar as tuas próprias receitas, segue o mesmo
 formato (`# Nome do prato`, `## Categoria`, `## Porções base`, `## Tempo de preparação`,
 `## Ingredientes`, `## Modo de preparação`) e volta a correr `python scripts/ingest.py`.
 Também são suportados ficheiros `.pdf` na mesma pasta.
@@ -104,8 +105,8 @@ preparação"), `likes` e `dislikes`.
 
 Sempre que uma das 3 opções gera uma ficha técnica para um prato que ainda não existe na
 coleção `cooking_project` (por nome, ignorando acentos/maiúsculas), essa receita é
-automaticamente guardada em `data/recipes/gerado_<nome-do-prato>.txt` e adicionada ao
-índice Chroma — fica disponível de imediato para futuras pesquisas/recuperações.
+automaticamente guardada em `data/recipes/<nome-do-prato>.txt` e adicionada ao índice
+Chroma — fica disponível de imediato para futuras pesquisas/recuperações.
 
 ### Recuperação de receitas (likes + relevância)
 

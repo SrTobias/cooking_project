@@ -19,7 +19,7 @@ from pydantic import BaseModel, Field
 from src import config
 from src.ingestion import add_recipe_document, load_vectorstore, recipe_exists, tempo_para_minutos
 
-TIPOS_REFEICAO = ["Qualquer", "Sopa", "Prato principal", "Sobremesa"]
+# TIPOS_REFEICAO = ["Qualquer", "Sopa", "Prato principal", "Sobremesa"]
 
 CATEGORIA_FILTROS = {
     "Sopa": ["Sopa"],

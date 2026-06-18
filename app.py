@@ -170,7 +170,7 @@ def _render_supermercados(ficha_key: str) -> None:
     else:
         endereco = st.text_input(
             "Morada",
-            placeholder="ex: Avenida da Liberdade, Lisboa  ou  1300-552 Lisboa",
+            placeholder="ex: Avenida da Liberdade, Lisboa  ou  1300-001 Lisboa",
             key=f"loc_endereco_{ficha_key}",
         )
         if endereco:

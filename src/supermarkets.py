@@ -9,14 +9,19 @@ import unicodedata
 import requests
 from geopy.exc import GeocoderServiceError
 from geopy.geocoders import Photon
+from geopy.point import Point
 
 from src import config
 
 GEOCODE_TENTATIVAS = 3
 GEOCODE_ESPERA_SEGUNDOS = 2
-# Centro aproximado de Portugal continental, usado para enviesar resultados ambíguos
-# (ex: nomes de rua que também existem noutros países de língua portuguesa).
-PORTUGAL_BIAS = (39.5, -8.0)
+# Caixa delimitadora aproximada de Portugal continental. Sem isto, pesquisas ambíguas
+# (ex: só um código postal, sem localidade) podem ser resolvidas para fora do país -
+# o OpenStreetMap tem fraca cobertura de códigos postais portugueses como entidades
+# pesquisáveis, e tanto o Photon como o Nominatim por vezes "adivinham" mal sem este
+# limite (ex: "1300-552" sem mais contexto era resolvido para Salt Lake City, EUA).
+# Não cobre Açores/Madeira - pesquisas nessas regiões podem ficar imprecisas.
+PORTUGAL_BBOX = [Point(42.2, -9.6), Point(36.8, -6.1)]
 
 RECOMMENDED_CHAINS = [
     "continente",
@@ -55,7 +60,7 @@ def geocode_address(address: str) -> tuple[float, float] | None:
     ultimo_erro: Exception | None = None
     for tentativa in range(GEOCODE_TENTATIVAS):
         try:
-            location = geolocator.geocode(address, location_bias=PORTUGAL_BIAS, timeout=10)
+            location = geolocator.geocode(address, bbox=PORTUGAL_BBOX, timeout=10)
             return (location.latitude, location.longitude) if location else None
         except GeocoderServiceError as exc:
             ultimo_erro = exc

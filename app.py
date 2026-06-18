@@ -169,7 +169,9 @@ def _render_supermercados(ficha_key: str) -> None:
             st.caption("Permite o acesso à localização no browser para continuar.")
     else:
         endereco = st.text_input(
-            "Morada", placeholder="ex: Avenida da Liberdade, Lisboa", key=f"loc_endereco_{ficha_key}"
+            "Morada",
+            placeholder="ex: Avenida da Liberdade, Lisboa  ou  1300-552 Lisboa",
+            key=f"loc_endereco_{ficha_key}",
         )
         if endereco:
             try:

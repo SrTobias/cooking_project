@@ -131,7 +131,7 @@ geração).
 
 ## Preços dos ingredientes
 
-As estimativas de custo usam duas fontes, por esta ordem:
+As estimativas de custo usam três fontes, por esta ordem:
 
 1. **`data/precos_ingredientes.json`** — tabela de preços médios para ingredientes comuns em
    supermercados portugueses. O campo `_updated_at` indica a data da última atualização.
@@ -139,16 +139,23 @@ As estimativas de custo usam duas fontes, por esta ordem:
    ao LLM (`LLM_MODEL`) para estimar o preço em supermercados portugueses. O resultado é
    cacheado em memória durante a sessão. A coluna "correspondência" na lista de compras mostra
    `(via LLM)` para estes casos.
+3. **Estimativa genérica** — se a chamada ao LLM falhar (ex: erro de rede), usa-se um preço
+   genérico (`config.DEFAULT_PRICE_EUR`), assinalado como `(estimativa genérica)`.
 
 ### Atualizar a tabela de preços
 
-Para refrescar os preços de todos os ingredientes da tabela com estimativas recentes do LLM:
+A tabela é atualizada automaticamente todas as segundas-feiras através do workflow
+[`.github/workflows/update-prices.yml`](.github/workflows/update-prices.yml) (GitHub Actions),
+que corre `scripts/update_prices.py` e faz commit do ficheiro se houver alterações. Requer o
+secret `OPENAI_API_KEY` configurado no repositório.
+
+Para refrescar manualmente os preços de todos os ingredientes da tabela com estimativas
+recentes do LLM:
 
 ```bash
 python scripts/update_prices.py
 ```
 
-Usa `--dry-run` para ver o resultado sem gravar o ficheiro. Recomenda-se correr este script
-de 2 a 4 vezes por ano para manter as estimativas aproximadas da realidade.
+Usa `--dry-run` para ver o resultado sem gravar o ficheiro.
 
 Os valores são sempre **referências aproximadas** — não refletem os preços reais em loja.

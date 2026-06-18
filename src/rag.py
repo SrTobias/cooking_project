@@ -3,7 +3,7 @@
 Implementa as 3 opções de interação descritas no enunciado:
   1. gerar_opcao1: ingredientes disponíveis em casa -> sugestão de prato
   2. gerar_opcao2: nome do prato desejado -> ficha técnica desse prato
-  3. gerar_opcao3: a IA sugere um prato (opcionalmente filtrado por tipo de refeição)
+  3. gerar_opcao3: a IA sugere um prato livremente
 """
 
 from __future__ import annotations
@@ -18,18 +18,6 @@ from pydantic import BaseModel, Field
 
 from src import config
 from src.ingestion import add_recipe_document, load_vectorstore, recipe_exists, tempo_para_minutos
-
-# TIPOS_REFEICAO = ["Qualquer", "Sopa", "Prato principal", "Sobremesa"]
-
-CATEGORIA_FILTROS = {
-    "Sopa": ["Sopa"],
-    "Prato principal": [
-        "Prato principal - Peixe",
-        "Prato principal - Carne",
-        "Prato principal - Vegetariano",
-    ],
-    "Sobremesa": ["Sobremesa"],
-}
 
 
 class Ingrediente(BaseModel):
@@ -98,7 +86,7 @@ contexto. Gera a ficha técnica completa para {pessoas} pessoas.
 No campo "ingredientes_em_falta", lista TODOS os ingredientes da receita (lista de compras
 completa), com as quantidades já ajustadas a {pessoas} pessoas."""
 
-TASK_OPCAO3 = """O utilizador pede uma sugestão de prato{tipo_refeicao_txt}.
+TASK_OPCAO3 = """O utilizador pede uma sugestão de prato.
 {restricao_dieta}{restricao_tempo}
 CONTEXTO (receitas da base de dados, usa como inspiração):
 {context}
@@ -267,30 +255,22 @@ def gerar_opcao2(nome_prato: str, pessoas: int, tempo_max: int | None = None) ->
     return ficha, run_id
 
 
-def _sample_context(tipo_refeicao: str | None, amostra: int = 5) -> str:
+def _sample_context(amostra: int = 5) -> str:
     vectorstore = load_vectorstore()
     data = vectorstore.get(include=["metadatas", "documents"])
     pares = list(zip(data["documents"], data["metadatas"]))
-
-    if tipo_refeicao and tipo_refeicao != "Qualquer":
-        categorias_validas = set(CATEGORIA_FILTROS.get(tipo_refeicao, []))
-        filtrados = [p for p in pares if p[1].get("categoria") in categorias_validas]
-        if filtrados:
-            pares = filtrados
 
     escolhidos = random.sample(pares, k=min(amostra, len(pares)))
     return "\n\n---\n\n".join(doc for doc, _ in escolhidos)
 
 
-def gerar_opcao3(pessoas: int, tipo_refeicao: str | None = None, dieta: str | None = None, tempo_max: int | None = None) -> tuple[FichaTecnica, str | None]:
-    context = _sample_context(tipo_refeicao)
-    tipo_txt = f" do tipo '{tipo_refeicao}'" if tipo_refeicao and tipo_refeicao != "Qualquer" else ""
+def gerar_opcao3(pessoas: int, dieta: str | None = None, tempo_max: int | None = None) -> tuple[FichaTecnica, str | None]:
+    context = _sample_context()
 
     chain = _build_chain(TASK_OPCAO3)
     inputs = {
         "context": context,
         "pessoas": pessoas,
-        "tipo_refeicao_txt": tipo_txt,
         "restricao_dieta": _restricao_dieta_txt(dieta),
         "restricao_tempo": _restricao_tempo_txt(tempo_max),
     }

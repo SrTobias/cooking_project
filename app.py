@@ -1,4 +1,4 @@
-"""Assistente de Cozinha RAG - Streamlit UI.
+"""Cooking for Dummies - Streamlit UI.
 
 Pipeline de query: Pergunta -> Retriever (Chroma) -> LLM (OpenAI) -> Resposta, com
 tracing/feedback via LangSmith. Inclui também a lista de supermercados próximos e

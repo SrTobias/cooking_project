@@ -17,7 +17,7 @@ from src.pricing import estimar_custo
 from src.rag import FichaTecnica, gerar_opcao1, gerar_opcao2, gerar_opcao3
 from src.supermarkets import filter_by_distance, find_supermarkets, geocode_address
 
-st.set_page_config(page_title="Assistente de Cozinha RAG", page_icon="🍳", layout="wide")
+st.set_page_config(page_title="Cooking for Dummies", page_icon="🍳", layout="wide")
 
 langsmith_ativo = setup_langsmith()
 PESSOAS_OPCOES = list(range(1, 11))
@@ -230,8 +230,8 @@ with st.sidebar:
 
 
 # --- Corpo principal -----------------------------------------------------------------
-st.title("🍳 Assistente de Cozinha RAG")
-st.caption("Receitas portuguesas com Chroma + LangSmith + OpenAI")
+st.title("🍳 Cooking for Dummies")
+st.caption("Receitas para a sua refeição gerada pela IA")
 
 if not config.OPENAI_API_KEY:
     st.error("Define a variável OPENAI_API_KEY no ficheiro .env antes de usar a aplicação.")

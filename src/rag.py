@@ -9,6 +9,7 @@ Implementa as 3 opções de interação descritas no enunciado:
 from __future__ import annotations
 
 import random
+import unicodedata
 
 from langchain_core.documents import Document
 from langchain_core.prompts import ChatPromptTemplate
@@ -60,14 +61,21 @@ TASK_OPCAO1 = """O utilizador tem os seguintes ingredientes disponíveis em casa
 CONTEXTO (receitas da base de dados):
 {context}
 
-Escolhe, de entre o contexto, o prato que melhor aproveita estes ingredientes (podes adaptar
-ligeiramente a receita). Gera a ficha técnica completa para {pessoas} pessoas.
+Escolhe uma receita do contexto como ponto de partida e adapta-a (substitui, adiciona ou remove
+ingredientes) para incorporar o MÁXIMO possível dos ingredientes fornecidos pelo utilizador,
+desde que o resultado faça sentido culinariamente. O campo "ingredientes" da ficha final tem de
+refletir a receita já adaptada — não deixes nele ingredientes da receita original do contexto
+que tenham sido substituídos. Gera a ficha técnica completa para {pessoas} pessoas.
 
-No campo "ingredientes_em_falta", lista APENAS os ingredientes da receita que o utilizador
-NÃO tem em casa e que precisa de comprar, com as quantidades já ajustadas a {pessoas} pessoas.
-IMPORTANTE: o utilizador tem SOMENTE os ingredientes listados acima e NADA MAIS — não assumas
-que tem ingredientes básicos como cebola, alho, azeite, sal ou pimenta a não ser que estejam
-na lista. Ingredientes com quantidade "q.b." não devem aparecer nesta lista."""
+No campo "ingredientes_em_falta", lista APENAS os ingredientes da receita FINAL (já adaptada,
+campo "ingredientes") que o utilizador NÃO tem em casa e que precisa de comprar, com as
+quantidades já ajustadas a {pessoas} pessoas. Cada ingrediente em "ingredientes_em_falta" tem de
+aparecer, com o nome exatamente igual, no campo "ingredientes" — nunca incluas aqui um
+ingrediente que não conste da receita final (ex: um ingrediente da receita original do contexto
+que tenha sido substituído). IMPORTANTE: o utilizador tem SOMENTE os ingredientes listados acima
+e NADA MAIS — não assumas que tem ingredientes básicos como cebola, alho, azeite, sal ou pimenta
+a não ser que estejam na lista. Ingredientes com quantidade "q.b." não devem aparecer nesta
+lista."""
 
 TASK_OPCAO2 = """O utilizador quer preparar o seguinte prato: "{nome_prato}"
 {restricao_tempo}
@@ -133,11 +141,28 @@ def _build_chain(task_template: str):
     return prompt | _get_llm().with_structured_output(FichaTecnica)
 
 
+def _normalize_ingrediente(nome: str) -> str:
+    texto = unicodedata.normalize("NFKD", nome)
+    texto = "".join(c for c in texto if not unicodedata.combining(c))
+    return texto.strip().lower()
+
+
+def _filtrar_ingredientes_em_falta(ficha: FichaTecnica) -> FichaTecnica:
+    """Garante que ingredientes_em_falta é sempre um subconjunto de ingredientes, para o caso
+    de o LLM listar para compra algo (ex: de uma receita do contexto) que não ficou na receita
+    final depois de adaptada."""
+    nomes_receita = {_normalize_ingrediente(i.nome) for i in ficha.ingredientes}
+    ficha.ingredientes_em_falta = [
+        i for i in ficha.ingredientes_em_falta if _normalize_ingrediente(i.nome) in nomes_receita
+    ]
+    return ficha
+
+
 def _invoke_with_tracing(chain, inputs: dict) -> tuple[FichaTecnica, str | None]:
     with collect_runs() as cb:
         result = chain.invoke(inputs)
     run_id = str(cb.traced_runs[0].id) if cb.traced_runs else None
-    return result, run_id
+    return _filtrar_ingredientes_em_falta(result), run_id
 
 
 def _ficha_to_document(ficha: FichaTecnica) -> Document:

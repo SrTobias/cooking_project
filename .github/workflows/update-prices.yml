@@ -1,0 +1,38 @@
+name: Atualizar preços dos ingredientes
+
+on:
+  schedule:
+    # Todas as segundas-feiras às 07:00 UTC (~08:00/09:00 em Lisboa, dependendo do horário de verão)
+    - cron: "0 7 * * 1"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  update-prices:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Instalar dependências
+        run: pip install -r requirements.txt
+
+      - name: Atualizar preços
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: python scripts/update_prices.py
+
+      - name: Commit e push se houve alterações
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/precos_ingredientes.json
+          git diff --staged --quiet || git commit -m "chore: atualizar preços dos ingredientes [skip ci]"
+          git push

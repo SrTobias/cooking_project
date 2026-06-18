@@ -1,4 +1,4 @@
-"""Localizador de supermercados: geocoding (Nominatim) + pesquisa via Overpass API (OpenStreetMap)."""
+"""Localizador de supermercados: geocoding (Photon) + pesquisa via Overpass API (OpenStreetMap)."""
 
 from __future__ import annotations
 
@@ -8,12 +8,15 @@ import unicodedata
 
 import requests
 from geopy.exc import GeocoderServiceError
-from geopy.geocoders import Nominatim
+from geopy.geocoders import Photon
 
 from src import config
 
 GEOCODE_TENTATIVAS = 3
 GEOCODE_ESPERA_SEGUNDOS = 2
+# Centro aproximado de Portugal continental, usado para enviesar resultados ambíguos
+# (ex: nomes de rua que também existem noutros países de língua portuguesa).
+PORTUGAL_BIAS = (39.5, -8.0)
 
 RECOMMENDED_CHAINS = [
     "continente",
@@ -41,17 +44,18 @@ def _normalize(text: str) -> str:
 
 
 def geocode_address(address: str) -> tuple[float, float] | None:
-    """Converte um endereço/código postal em (latitude, longitude) via Nominatim.
+    """Converte um endereço/código postal em (latitude, longitude) via Photon (komoot).
 
-    O Nominatim é um serviço gratuito e por vezes devolve erro de limite de taxa
-    (ex: tráfego partilhado no IP do Streamlit Cloud); tenta-se algumas vezes com
-    um pequeno intervalo antes de desistir.
+    Usa-se o Photon em vez do Nominatim porque a instância pública do Nominatim
+    aplica um limite de taxa partilhado por todos os utilizadores de um mesmo IP
+    (ex: o IP do Streamlit Cloud), o que causava erros frequentes de rate limit.
+    Mesmo assim, tenta-se algumas vezes com um pequeno intervalo antes de desistir.
     """
-    geolocator = Nominatim(user_agent=config.NOMINATIM_USER_AGENT)
+    geolocator = Photon(user_agent=config.APP_USER_AGENT)
     ultimo_erro: Exception | None = None
     for tentativa in range(GEOCODE_TENTATIVAS):
         try:
-            location = geolocator.geocode(address, country_codes="pt", timeout=10)
+            location = geolocator.geocode(address, location_bias=PORTUGAL_BIAS, timeout=10)
             return (location.latitude, location.longitude) if location else None
         except GeocoderServiceError as exc:
             ultimo_erro = exc
@@ -98,7 +102,7 @@ def _query_overpass(query: str) -> list[dict]:
             response = requests.post(
                 url,
                 data={"data": query},
-                headers={"User-Agent": config.NOMINATIM_USER_AGENT},
+                headers={"User-Agent": config.APP_USER_AGENT},
                 timeout=30,
             )
             response.raise_for_status()

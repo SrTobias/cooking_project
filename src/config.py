@@ -53,7 +53,7 @@ OVERPASS_URLS = [
     "https://overpass.kumi.systems/api/interpreter",
     "https://overpass.openstreetmap.fr/api/interpreter",
 ]
-NOMINATIM_USER_AGENT = "cooking-rag-app"
+APP_USER_AGENT = "cooking-rag-app"
 
 # Preços
 DEFAULT_PRICE_EUR = 1.50

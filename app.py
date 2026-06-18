@@ -22,6 +22,7 @@ st.set_page_config(page_title="Cooking for Dummies", page_icon="🍳", layout="w
 langsmith_ativo = setup_langsmith()
 PESSOAS_OPCOES = list(range(1, 11))
 _TEMPO_MAP = {"30 min": 30, "60 min": 60, "90 min": 90}
+MODO_OPCOES = ["💡 Tenho estes ingredientes", "🍽️ Quero fazer este prato", "🎲 Surpreende-me"]
 
 
 @st.cache_data(show_spinner=False, ttl=3600)
@@ -239,11 +240,18 @@ if not config.OPENAI_API_KEY:
 if not _index_exists():
     st.warning("Índice ChromaDB não encontrado. Corre `python scripts/ingest.py` para o criar.")
 
-tab1, tab2, tab3 = st.tabs(
-    ["💡 Tenho estes ingredientes", "🍽️ Quero fazer este prato", "🎲 Surpreende-me"]
+modo = st.segmented_control(
+    "Modo", options=MODO_OPCOES, default=MODO_OPCOES[0], label_visibility="collapsed"
 )
+if modo is None:
+    modo = st.session_state.get("_ultimo_modo", MODO_OPCOES[0])
+if modo != st.session_state.get("_ultimo_modo"):
+    st.session_state.pop("resultado", None)
+st.session_state["_ultimo_modo"] = modo
 
-with tab1:
+st.divider()
+
+if modo == MODO_OPCOES[0]:
     st.markdown("Indica os ingredientes que tens disponíveis em casa (um por linha).")
     ingredientes_texto = st.text_area(
         "Ingredientes disponíveis",
@@ -271,7 +279,7 @@ with tab1:
             except Exception as exc:
                 st.error(f"Ocorreu um erro ao gerar a sugestão: {exc}")
 
-with tab2:
+elif modo == MODO_OPCOES[1]:
     st.markdown("Indica o nome do prato que queres preparar.")
     nome_prato = st.text_input("Prato", placeholder="ex: Caldo Verde", key="opcao2_nome")
     col_p2, col_t2, _ = st.columns([1, 3, 5])
@@ -291,7 +299,7 @@ with tab2:
             except Exception as exc:
                 st.error(f"Ocorreu um erro ao gerar a receita: {exc}")
 
-with tab3:
+else:
     st.markdown("Deixa a IA sugerir um prato para ti.")
     col_p3, col_d3, col_t3, _ = st.columns([1, 3, 3, 2])
     with col_p3:

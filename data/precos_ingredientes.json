@@ -1,6 +1,6 @@
 {
   "_comment": "Preços médios aproximados (EUR) em supermercados portugueses. Usado apenas para estimativas. unidade: kg | l | unidade",
-  "_updated_at": "2026-06-22",
+  "_updated_at": "2026-06-29",
   "batata palha": {
     "preco": 2.5,
     "unidade": "kg"
@@ -34,7 +34,7 @@
     "unidade": "l"
   },
   "oleo": {
-    "preco": 2.5,
+    "preco": 1.5,
     "unidade": "l"
   },
   "salsa": {
@@ -42,7 +42,7 @@
     "unidade": "kg"
   },
   "coentros": {
-    "preco": 1.0,
+    "preco": 1.5,
     "unidade": "kg"
   },
   "azeitona": {
@@ -54,7 +54,7 @@
     "unidade": "kg"
   },
   "pimenta": {
-    "preco": 2.0,
+    "preco": 3.0,
     "unidade": "kg"
   },
   "couve": {
@@ -70,7 +70,7 @@
     "unidade": "unidade"
   },
   "pao alentejano": {
-    "preco": 1.0,
+    "preco": 2.0,
     "unidade": "unidade"
   },
   "papo seco": {
@@ -174,11 +174,11 @@
     "unidade": "kg"
   },
   "louro": {
-    "preco": 1.5,
+    "preco": 2.0,
     "unidade": "kg"
   },
   "alecrim": {
-    "preco": 2.0,
+    "preco": 3.0,
     "unidade": "kg"
   },
   "esparguete": {
@@ -186,7 +186,7 @@
     "unidade": "kg"
   },
   "massa": {
-    "preco": 1.2,
+    "preco": 1.5,
     "unidade": "kg"
   },
   "tomate pelado": {
@@ -198,7 +198,7 @@
     "unidade": "kg"
   },
   "cogumelos": {
-    "preco": 3.0,
+    "preco": 5.0,
     "unidade": "kg"
   },
   "caldo de legumes": {
@@ -226,11 +226,11 @@
     "unidade": "l"
   },
   "noz moscada": {
-    "preco": 2.5,
+    "preco": 3.0,
     "unidade": "kg"
   },
   "colorau": {
-    "preco": 1.5,
+    "preco": 2.0,
     "unidade": "kg"
   },
   "acucar": {
@@ -238,7 +238,7 @@
     "unidade": "kg"
   },
   "canela": {
-    "preco": 2.0,
+    "preco": 3.0,
     "unidade": "kg"
   },
   "farinha": {
@@ -246,15 +246,15 @@
     "unidade": "kg"
   },
   "chocolate negro": {
-    "preco": 3.0,
+    "preco": 5.0,
     "unidade": "kg"
   },
   "chocolate": {
-    "preco": 2.5,
+    "preco": 4.0,
     "unidade": "kg"
   },
   "essencia de vanilha": {
-    "preco": 5.0,
+    "preco": 10.0,
     "unidade": "l"
   }
 }

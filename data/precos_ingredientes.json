@@ -1,6 +1,6 @@
 {
   "_comment": "Preços médios aproximados (EUR) em supermercados portugueses. Usado apenas para estimativas. unidade: kg | l | unidade",
-  "_updated_at": "2026-07-06",
+  "_updated_at": "2026-07-27",
   "batata palha": {
     "preco": 2.5,
     "unidade": "kg"
@@ -54,7 +54,7 @@
     "unidade": "kg"
   },
   "pimenta": {
-    "preco": 3.5,
+    "preco": 2.0,
     "unidade": "kg"
   },
   "couve": {
@@ -174,11 +174,11 @@
     "unidade": "kg"
   },
   "louro": {
-    "preco": 2.0,
+    "preco": 1.5,
     "unidade": "kg"
   },
   "alecrim": {
-    "preco": 2.5,
+    "preco": 2.0,
     "unidade": "kg"
   },
   "esparguete": {
@@ -226,11 +226,11 @@
     "unidade": "l"
   },
   "noz moscada": {
-    "preco": 3.0,
+    "preco": 2.5,
     "unidade": "kg"
   },
   "colorau": {
-    "preco": 2.0,
+    "preco": 1.5,
     "unidade": "kg"
   },
   "acucar": {
@@ -238,7 +238,7 @@
     "unidade": "kg"
   },
   "canela": {
-    "preco": 3.0,
+    "preco": 2.0,
     "unidade": "kg"
   },
   "farinha": {
@@ -246,15 +246,15 @@
     "unidade": "kg"
   },
   "chocolate negro": {
-    "preco": 5.0,
+    "preco": 3.0,
     "unidade": "kg"
   },
   "chocolate": {
-    "preco": 4.0,
+    "preco": 2.5,
     "unidade": "kg"
   },
   "essencia de vanilha": {
-    "preco": 4.0,
+    "preco": 5.0,
     "unidade": "l"
   }
 }

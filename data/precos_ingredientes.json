@@ -1,6 +1,6 @@
 {
   "_comment": "Preços médios aproximados (EUR) em supermercados portugueses. Usado apenas para estimativas. unidade: kg | l | unidade",
-  "_updated_at": "2026-07-27",
+  "_updated_at": "2026-08-03",
   "batata palha": {
     "preco": 2.5,
     "unidade": "kg"
@@ -34,7 +34,7 @@
     "unidade": "l"
   },
   "oleo": {
-    "preco": 1.5,
+    "preco": 2.0,
     "unidade": "l"
   },
   "salsa": {
@@ -42,7 +42,7 @@
     "unidade": "kg"
   },
   "coentros": {
-    "preco": 1.0,
+    "preco": 1.5,
     "unidade": "kg"
   },
   "azeitona": {
@@ -54,7 +54,7 @@
     "unidade": "kg"
   },
   "pimenta": {
-    "preco": 2.0,
+    "preco": 3.5,
     "unidade": "kg"
   },
   "couve": {
@@ -110,7 +110,7 @@
     "unidade": "kg"
   },
   "molho de cerveja": {
-    "preco": 2.0,
+    "preco": 2.5,
     "unidade": "l"
   },
   "pato": {
@@ -226,11 +226,11 @@
     "unidade": "l"
   },
   "noz moscada": {
-    "preco": 2.5,
+    "preco": 3.0,
     "unidade": "kg"
   },
   "colorau": {
-    "preco": 1.5,
+    "preco": 2.0,
     "unidade": "kg"
   },
   "acucar": {
@@ -238,7 +238,7 @@
     "unidade": "kg"
   },
   "canela": {
-    "preco": 2.0,
+    "preco": 3.0,
     "unidade": "kg"
   },
   "farinha": {
@@ -246,7 +246,7 @@
     "unidade": "kg"
   },
   "chocolate negro": {
-    "preco": 3.0,
+    "preco": 3.5,
     "unidade": "kg"
   },
   "chocolate": {

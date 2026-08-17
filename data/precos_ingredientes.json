@@ -1,6 +1,6 @@
 {
   "_comment": "Preços médios aproximados (EUR) em supermercados portugueses. Usado apenas para estimativas. unidade: kg | l | unidade",
-  "_updated_at": "2026-08-10",
+  "_updated_at": "2026-08-17",
   "batata palha": {
     "preco": 2.5,
     "unidade": "kg"
@@ -226,7 +226,7 @@
     "unidade": "l"
   },
   "noz moscada": {
-    "preco": 2.5,
+    "preco": 2.0,
     "unidade": "kg"
   },
   "colorau": {
@@ -238,7 +238,7 @@
     "unidade": "kg"
   },
   "canela": {
-    "preco": 2.0,
+    "preco": 2.5,
     "unidade": "kg"
   },
   "farinha": {

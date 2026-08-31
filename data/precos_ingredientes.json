@@ -1,6 +1,6 @@
 {
   "_comment": "Preços médios aproximados (EUR) em supermercados portugueses. Usado apenas para estimativas. unidade: kg | l | unidade",
-  "_updated_at": "2026-08-24",
+  "_updated_at": "2026-08-31",
   "batata palha": {
     "preco": 2.5,
     "unidade": "kg"
@@ -54,11 +54,11 @@
     "unidade": "kg"
   },
   "pimenta": {
-    "preco": 3.5,
+    "preco": 3.0,
     "unidade": "kg"
   },
   "couve": {
-    "preco": 1.0,
+    "preco": 1.5,
     "unidade": "kg"
   },
   "chourico": {
@@ -254,7 +254,7 @@
     "unidade": "kg"
   },
   "essencia de vanilha": {
-    "preco": 10.0,
-    "unidade": "l"
+    "preco": 3.0,
+    "unidade": "unidade"
   }
 }

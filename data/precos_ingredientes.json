@@ -1,6 +1,6 @@
 {
   "_comment": "Preços médios aproximados (EUR) em supermercados portugueses. Usado apenas para estimativas. unidade: kg | l | unidade",
-  "_updated_at": "2026-09-07",
+  "_updated_at": "2026-09-14",
   "batata palha": {
     "preco": 2.5,
     "unidade": "kg"
@@ -22,7 +22,7 @@
     "unidade": "kg"
   },
   "alho frances": {
-    "preco": 2.0,
+    "preco": 1.5,
     "unidade": "kg"
   },
   "alho": {
@@ -34,16 +34,16 @@
     "unidade": "l"
   },
   "oleo": {
-    "preco": 1.5,
+    "preco": 2.0,
     "unidade": "l"
   },
   "salsa": {
     "preco": 1.0,
-    "unidade": "unidade"
+    "unidade": "kg"
   },
   "coentros": {
-    "preco": 1.0,
-    "unidade": "unidade"
+    "preco": 1.5,
+    "unidade": "kg"
   },
   "azeitona": {
     "preco": 3.0,
@@ -54,11 +54,11 @@
     "unidade": "kg"
   },
   "pimenta": {
-    "preco": 2.5,
+    "preco": 3.5,
     "unidade": "kg"
   },
   "couve": {
-    "preco": 1.5,
+    "preco": 1.0,
     "unidade": "kg"
   },
   "chourico": {
@@ -70,7 +70,7 @@
     "unidade": "unidade"
   },
   "pao alentejano": {
-    "preco": 1.8,
+    "preco": 2.0,
     "unidade": "unidade"
   },
   "papo seco": {
@@ -130,11 +130,11 @@
     "unidade": "kg"
   },
   "feijao": {
-    "preco": 1.2,
+    "preco": 1.8,
     "unidade": "kg"
   },
   "grao de bico": {
-    "preco": 1.5,
+    "preco": 2.0,
     "unidade": "kg"
   },
   "entrecosto": {
@@ -154,7 +154,7 @@
     "unidade": "kg"
   },
   "nabo": {
-    "preco": 1.0,
+    "preco": 1.2,
     "unidade": "kg"
   },
   "courgette": {
@@ -174,23 +174,23 @@
     "unidade": "kg"
   },
   "louro": {
-    "preco": 1.5,
-    "unidade": "unidade"
+    "preco": 2.0,
+    "unidade": "kg"
   },
   "alecrim": {
-    "preco": 1.5,
-    "unidade": "unidade"
+    "preco": 3.0,
+    "unidade": "kg"
   },
   "esparguete": {
-    "preco": 1.0,
+    "preco": 1.5,
     "unidade": "kg"
   },
   "massa": {
-    "preco": 1.0,
+    "preco": 1.5,
     "unidade": "kg"
   },
   "tomate pelado": {
-    "preco": 1.5,
+    "preco": 1.2,
     "unidade": "kg"
   },
   "tomate": {
@@ -206,7 +206,7 @@
     "unidade": "unidade"
   },
   "vinho branco": {
-    "preco": 3.0,
+    "preco": 5.0,
     "unidade": "l"
   },
   "manteiga": {
@@ -226,11 +226,11 @@
     "unidade": "l"
   },
   "noz moscada": {
-    "preco": 2.0,
+    "preco": 4.0,
     "unidade": "kg"
   },
   "colorau": {
-    "preco": 1.5,
+    "preco": 2.0,
     "unidade": "kg"
   },
   "acucar": {
@@ -238,7 +238,7 @@
     "unidade": "kg"
   },
   "canela": {
-    "preco": 2.0,
+    "preco": 3.0,
     "unidade": "kg"
   },
   "farinha": {
@@ -246,15 +246,15 @@
     "unidade": "kg"
   },
   "chocolate negro": {
-    "preco": 3.0,
+    "preco": 5.0,
     "unidade": "kg"
   },
   "chocolate": {
-    "preco": 2.5,
+    "preco": 4.0,
     "unidade": "kg"
   },
   "essencia de vanilha": {
-    "preco": 5.0,
+    "preco": 3.5,
     "unidade": "l"
   }
 }

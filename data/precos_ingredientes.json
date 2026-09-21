@@ -1,12 +1,12 @@
 {
   "_comment": "Preços médios aproximados (EUR) em supermercados portugueses. Usado apenas para estimativas. unidade: kg | l | unidade",
-  "_updated_at": "2026-09-14",
+  "_updated_at": "2026-09-21",
   "batata palha": {
     "preco": 2.5,
     "unidade": "kg"
   },
   "batata": {
-    "preco": 1.0,
+    "preco": 1.2,
     "unidade": "kg"
   },
   "bacalhau": {
@@ -18,7 +18,7 @@
     "unidade": "unidade"
   },
   "cebola": {
-    "preco": 1.2,
+    "preco": 1.0,
     "unidade": "kg"
   },
   "alho frances": {
@@ -58,7 +58,7 @@
     "unidade": "kg"
   },
   "couve": {
-    "preco": 1.0,
+    "preco": 1.2,
     "unidade": "kg"
   },
   "chourico": {
@@ -186,11 +186,11 @@
     "unidade": "kg"
   },
   "massa": {
-    "preco": 1.5,
+    "preco": 1.2,
     "unidade": "kg"
   },
   "tomate pelado": {
-    "preco": 1.2,
+    "preco": 1.5,
     "unidade": "kg"
   },
   "tomate": {
@@ -254,7 +254,7 @@
     "unidade": "kg"
   },
   "essencia de vanilha": {
-    "preco": 3.5,
+    "preco": 6.0,
     "unidade": "l"
   }
 }

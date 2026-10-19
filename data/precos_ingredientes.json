@@ -1,6 +1,6 @@
 {
   "_comment": "Preços médios aproximados (EUR) em supermercados portugueses. Usado apenas para estimativas. unidade: kg | l | unidade",
-  "_updated_at": "2026-10-12",
+  "_updated_at": "2026-10-19",
   "batata palha": {
     "preco": 2.5,
     "unidade": "kg"
@@ -22,7 +22,7 @@
     "unidade": "kg"
   },
   "alho frances": {
-    "preco": 1.5,
+    "preco": 2.0,
     "unidade": "kg"
   },
   "alho": {
@@ -30,15 +30,15 @@
     "unidade": "kg"
   },
   "azeite": {
-    "preco": 5.0,
+    "preco": 6.0,
     "unidade": "l"
   },
   "oleo": {
-    "preco": 1.5,
+    "preco": 2.5,
     "unidade": "l"
   },
   "salsa": {
-    "preco": 1.0,
+    "preco": 1.5,
     "unidade": "kg"
   },
   "coentros": {
@@ -54,7 +54,7 @@
     "unidade": "kg"
   },
   "pimenta": {
-    "preco": 2.0,
+    "preco": 3.0,
     "unidade": "kg"
   },
   "couve": {
@@ -142,11 +142,11 @@
     "unidade": "kg"
   },
   "toucinho": {
-    "preco": 7.0,
+    "preco": 8.0,
     "unidade": "kg"
   },
   "farinheira": {
-    "preco": 8.0,
+    "preco": 6.0,
     "unidade": "kg"
   },
   "cenoura": {
@@ -186,11 +186,11 @@
     "unidade": "kg"
   },
   "massa": {
-    "preco": 1.2,
+    "preco": 1.5,
     "unidade": "kg"
   },
   "tomate pelado": {
-    "preco": 1.5,
+    "preco": 1.2,
     "unidade": "kg"
   },
   "tomate": {
@@ -226,11 +226,11 @@
     "unidade": "l"
   },
   "noz moscada": {
-    "preco": 2.5,
+    "preco": 3.0,
     "unidade": "kg"
   },
   "colorau": {
-    "preco": 1.5,
+    "preco": 2.0,
     "unidade": "kg"
   },
   "acucar": {
@@ -238,7 +238,7 @@
     "unidade": "kg"
   },
   "canela": {
-    "preco": 2.0,
+    "preco": 3.0,
     "unidade": "kg"
   },
   "farinha": {
@@ -246,15 +246,15 @@
     "unidade": "kg"
   },
   "chocolate negro": {
-    "preco": 3.0,
+    "preco": 5.0,
     "unidade": "kg"
   },
   "chocolate": {
-    "preco": 2.5,
+    "preco": 4.0,
     "unidade": "kg"
   },
   "essencia de vanilha": {
-    "preco": 5.0,
+    "preco": 4.0,
     "unidade": "l"
   }
 }

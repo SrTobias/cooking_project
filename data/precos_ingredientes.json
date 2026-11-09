@@ -1,6 +1,6 @@
 {
   "_comment": "Preços médios aproximados (EUR) em supermercados portugueses. Usado apenas para estimativas. unidade: kg | l | unidade",
-  "_updated_at": "2026-11-02",
+  "_updated_at": "2026-11-09",
   "batata palha": {
     "preco": 2.5,
     "unidade": "kg"
@@ -22,7 +22,7 @@
     "unidade": "kg"
   },
   "alho frances": {
-    "preco": 2.0,
+    "preco": 1.5,
     "unidade": "kg"
   },
   "alho": {
@@ -34,11 +34,11 @@
     "unidade": "l"
   },
   "oleo": {
-    "preco": 2.5,
+    "preco": 1.5,
     "unidade": "l"
   },
   "salsa": {
-    "preco": 1.5,
+    "preco": 1.0,
     "unidade": "kg"
   },
   "coentros": {
@@ -54,11 +54,11 @@
     "unidade": "kg"
   },
   "pimenta": {
-    "preco": 3.0,
+    "preco": 3.5,
     "unidade": "kg"
   },
   "couve": {
-    "preco": 1.5,
+    "preco": 1.0,
     "unidade": "kg"
   },
   "chourico": {
@@ -111,7 +111,7 @@
   },
   "molho de cerveja": {
     "preco": 2.0,
-    "unidade": "unidade"
+    "unidade": "l"
   },
   "pato": {
     "preco": 12.0,
@@ -142,11 +142,11 @@
     "unidade": "kg"
   },
   "toucinho": {
-    "preco": 8.0,
+    "preco": 7.0,
     "unidade": "kg"
   },
   "farinheira": {
-    "preco": 7.0,
+    "preco": 8.0,
     "unidade": "kg"
   },
   "cenoura": {
@@ -174,11 +174,11 @@
     "unidade": "kg"
   },
   "louro": {
-    "preco": 1.5,
+    "preco": 2.0,
     "unidade": "kg"
   },
   "alecrim": {
-    "preco": 1.5,
+    "preco": 3.0,
     "unidade": "kg"
   },
   "esparguete": {
@@ -191,7 +191,7 @@
   },
   "tomate pelado": {
     "preco": 1.2,
-    "unidade": "unidade"
+    "unidade": "kg"
   },
   "tomate": {
     "preco": 2.0,
@@ -226,7 +226,7 @@
     "unidade": "l"
   },
   "noz moscada": {
-    "preco": 3.0,
+    "preco": 4.0,
     "unidade": "kg"
   },
   "colorau": {
@@ -254,7 +254,7 @@
     "unidade": "kg"
   },
   "essencia de vanilha": {
-    "preco": 3.0,
-    "unidade": "unidade"
+    "preco": 10.0,
+    "unidade": "l"
   }
 }

@@ -1,6 +1,6 @@
 {
   "_comment": "Preços médios aproximados (EUR) em supermercados portugueses. Usado apenas para estimativas. unidade: kg | l | unidade",
-  "_updated_at": "2026-11-09",
+  "_updated_at": "2026-11-16",
   "batata palha": {
     "preco": 2.5,
     "unidade": "kg"
@@ -34,7 +34,7 @@
     "unidade": "l"
   },
   "oleo": {
-    "preco": 1.5,
+    "preco": 2.0,
     "unidade": "l"
   },
   "salsa": {
@@ -58,7 +58,7 @@
     "unidade": "kg"
   },
   "couve": {
-    "preco": 1.0,
+    "preco": 1.5,
     "unidade": "kg"
   },
   "chourico": {
@@ -110,7 +110,7 @@
     "unidade": "kg"
   },
   "molho de cerveja": {
-    "preco": 2.0,
+    "preco": 2.5,
     "unidade": "l"
   },
   "pato": {
@@ -198,7 +198,7 @@
     "unidade": "kg"
   },
   "cogumelos": {
-    "preco": 3.0,
+    "preco": 5.0,
     "unidade": "kg"
   },
   "caldo de legumes": {
@@ -206,11 +206,11 @@
     "unidade": "unidade"
   },
   "vinho branco": {
-    "preco": 5.0,
+    "preco": 3.0,
     "unidade": "l"
   },
   "manteiga": {
-    "preco": 3.0,
+    "preco": 5.0,
     "unidade": "kg"
   },
   "limao": {
@@ -226,7 +226,7 @@
     "unidade": "l"
   },
   "noz moscada": {
-    "preco": 4.0,
+    "preco": 3.0,
     "unidade": "kg"
   },
   "colorau": {
